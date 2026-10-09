@@ -1,0 +1,10 @@
+{
+  "description": "Analyze invoices from Excel files, generate PDFs, and provide AI-powered chatbot support for order management, tracking, returns, and customer service.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
