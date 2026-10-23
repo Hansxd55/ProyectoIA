@@ -1,0 +1,105 @@
+﻿Entidad,Campo,TipoLogico,DescripcionEntidad,Obligatorio,SistemaOrigen,Clasificacion,Synthetic
+Productos,SKU,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Si,Río Claro Demo,Uso interno,TRUE
+Productos,Nombre,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Si,Río Claro Demo,Uso interno,TRUE
+Productos,Categoria,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Subcategoria,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Presentacion,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Unidad,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Marca,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Costo_MXN,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Precio_MXN,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Estado,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,ProveedorPrincipalID,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,ProveedorAlternoID,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,LeadTimeDias,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,ClasificacionDato,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Productos,Synthetic,Texto/Fecha/Numero según columna,Catálogo de 100 productos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,InventarioID,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Si,Río Claro Demo,Uso interno,TRUE
+Inventario,SKU,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Si,Río Claro Demo,Uso interno,TRUE
+Inventario,Producto,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,Sucursal,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,ExistenciaFisica,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,Reservado,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,Disponible,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,Minimo,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,Maximo,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,EstatusStock,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,FechaCorte,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,SistemaOrigen,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Inventario,Synthetic,Texto/Fecha/Numero según columna,Existencia por SKU y sucursal,Según entidad,Río Claro Demo,Uso interno,TRUE
+Clientes,ClienteID,Texto/Fecha/Numero según columna,Clientes sintéticos,Si,Río Claro Demo,Uso interno,TRUE
+Clientes,RazonSocial,Texto/Fecha/Numero según columna,Clientes sintéticos,Si,Río Claro Demo,Uso interno,TRUE
+Clientes,Segmento,Texto/Fecha/Numero según columna,Clientes sintéticos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Clientes,NivelServicio,Texto/Fecha/Numero según columna,Clientes sintéticos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Clientes,CondicionesPago,Texto/Fecha/Numero según columna,Clientes sintéticos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Clientes,Correo,Texto/Fecha/Numero según columna,Clientes sintéticos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Clientes,SucursalResponsable,Texto/Fecha/Numero según columna,Clientes sintéticos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Clientes,Estado,Texto/Fecha/Numero según columna,Clientes sintéticos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Clientes,Synthetic,Texto/Fecha/Numero según columna,Clientes sintéticos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,PedidoID,Texto/Fecha/Numero según columna,Cabecera de pedidos,Si,Río Claro Demo,Uso interno,TRUE
+Pedidos,ClienteID,Texto/Fecha/Numero según columna,Cabecera de pedidos,Si,Río Claro Demo,Uso interno,TRUE
+Pedidos,FechaPedido,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Estado,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Sucursal,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,FechaComprometida,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,TipoFecha,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Guia,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Incidencia,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Subtotal_MXN,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,IVA_MXN,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Total_MXN,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Moneda,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,SistemaOrigen,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,ClasificacionDato,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedidos,Synthetic,Texto/Fecha/Numero según columna,Cabecera de pedidos,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,LineaID,Texto/Fecha/Numero según columna,Líneas de pedido,Si,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,PedidoID,Texto/Fecha/Numero según columna,Líneas de pedido,Si,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,Linea,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,SKU,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,Producto,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,CantidadPedida,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,Unidad,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,PrecioUnitario_MXN,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,Importe_MXN,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,CantidadSurtida,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Pedido_Detalle,Synthetic,Texto/Fecha/Numero según columna,Líneas de pedido,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,FacturaID,Texto/Fecha/Numero según columna,Facturas sintéticas,Si,Río Claro Demo,Uso interno,TRUE
+Facturas,ClienteID,Texto/Fecha/Numero según columna,Facturas sintéticas,Si,Río Claro Demo,Uso interno,TRUE
+Facturas,PedidoID,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,UUID,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,FechaEmision,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,Estado,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,Subtotal_MXN,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,IVA_MXN,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,Total_MXN,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,Moneda,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,XML_URL_Prueba,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,PDF_URL_Prueba,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,EstadoNotaCredito,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,SistemaOrigen,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,ClasificacionDato,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Facturas,Synthetic,Texto/Fecha/Numero según columna,Facturas sintéticas,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,TicketID,Texto/Fecha/Numero según columna,Casos y reclamaciones,Si,Río Claro Demo,Uso interno,TRUE
+Tickets,ClienteID,Texto/Fecha/Numero según columna,Casos y reclamaciones,Si,Río Claro Demo,Uso interno,TRUE
+Tickets,RelacionadoID,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,Tipo,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,Categoria,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,Prioridad,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,Estado,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,Responsable,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,FechaCreacion,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,FechaObjetivo,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,SLA_Horas,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,Descripcion,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,ProximaAccion,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,BloqueoRetencion,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,ClasificacionDato,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Tickets,Synthetic,Texto/Fecha/Numero según columna,Casos y reclamaciones,Según entidad,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,TestID,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Si,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,CategoriaPrueba,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Si,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,EntidadID,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Según entidad,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,HojaFuente,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Según entidad,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,PrincipalID,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Según entidad,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,HerramientaEsperada,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Según entidad,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,ResultadoEsperado,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Según entidad,Río Claro Demo,Uso interno,TRUE
+Mapeo_Pruebas,Synthetic,Texto/Fecha/Numero según columna,Vínculo con escenarios de evaluación,Según entidad,Río Claro Demo,Uso interno,TRUE

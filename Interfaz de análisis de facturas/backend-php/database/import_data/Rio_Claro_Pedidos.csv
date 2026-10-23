@@ -1,0 +1,31 @@
+﻿PedidoID,ClienteID,FechaPedido,Estado,Sucursal,FechaComprometida,TipoFecha,Guia,Incidencia,Subtotal_MXN,IVA_MXN,Total_MXN,Moneda,SistemaOrigen,ClasificacionDato,Synthetic
+RC-PED-1001,CLI-0001,2026-09-02,Confirmado,Leon,2026-09-07,Estimada,,,"$1,283.32",$205.33,"$1,488.65",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1002,CLI-0001,2026-09-03,En preparacion,Queretaro,2026-09-09,Estimada,,,"$2,113.99",$338.24,"$2,452.23",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1003,CLI-0001,2026-09-04,Embarcado,Puebla,2026-09-11,Confirmada,RC-GUIA-00003,,"$3,107.50",$497.20,"$3,604.70",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1004,CLI-0001,2026-09-05,En transito,Toluca,2026-09-13,Confirmada,RC-GUIA-00004,,"$4,220.56",$675.29,"$4,895.85",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1005,CLI-0001,2026-09-06,Entregado,CDMX,2026-09-10,Confirmada,RC-GUIA-00005,,"$5,755.64",$920.90,"$6,676.54",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1006,CLI-0001,2026-09-07,Con incidencia,Leon,2026-09-12,Estimada,,Faltante parcial en validacion,"$7,014.79","$1,122.37","$8,137.16",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1007,CLI-0001,2026-09-08,Confirmado,Queretaro,2026-09-14,Estimada,,,"$8,912.46","$1,425.99","$10,338.45",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1008,CLI-0001,2026-09-09,En preparacion,Puebla,2026-09-16,Estimada,,,"$10,791.87","$1,726.70","$12,518.57",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1009,CLI-0002,2026-09-10,Embarcado,Toluca,2026-09-18,Confirmada,RC-GUIA-00009,,"$12,733.58","$2,037.37","$14,770.95",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1010,CLI-0002,2026-09-11,En transito,CDMX,2026-09-15,Confirmada,RC-GUIA-00010,,"$15,472.48","$2,475.60","$17,948.08",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1011,CLI-0002,2026-09-12,Entregado,Leon,2026-09-17,Confirmada,RC-GUIA-00011,,"$17,211.35","$2,753.82","$19,965.17",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1012,CLI-0002,2026-09-13,Con incidencia,Queretaro,2026-09-19,Estimada,,Faltante parcial en validacion,"$20,308.33","$3,249.33","$23,557.66",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1013,CLI-0002,2026-09-14,Confirmado,Puebla,2026-09-21,Estimada,,,"$23,040.55","$3,686.49","$26,727.04",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1014,CLI-0002,2026-09-15,En preparacion,Toluca,2026-09-23,Estimada,,,"$25,777.90","$4,124.46","$29,902.36",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1015,CLI-0002,2026-09-16,Embarcado,CDMX,2026-09-20,Confirmada,RC-GUIA-00015,,"$20,050.93","$3,208.15","$23,259.08",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1101,CLI-0002,2026-09-17,En transito,Leon,2026-09-22,Confirmada,RC-GUIA-00016,,"$12,385.88","$1,981.74","$14,367.62",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1102,CLI-0002,2026-09-18,Entregado,Queretaro,2026-09-24,Confirmada,RC-GUIA-00017,,"$5,171.16",$827.39,"$5,998.55",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1103,CLI-0002,2026-09-19,Con incidencia,Puebla,2026-09-26,Estimada,,Faltante parcial en validacion,"$7,284.14","$1,165.46","$8,449.60",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1104,CLI-0002,2026-09-20,Confirmado,Toluca,2026-09-28,Estimada,,,$610.54,$97.69,$708.23,MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1105,CLI-0002,2026-09-21,En preparacion,CDMX,2026-09-25,Estimada,,,"$1,322.13",$211.54,"$1,533.67",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1106,CLI-0002,2026-09-22,Embarcado,Leon,2026-09-27,Confirmada,RC-GUIA-00021,,"$2,099.73",$335.96,"$2,435.69",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1107,CLI-0002,2026-09-23,En transito,Queretaro,2026-09-29,Confirmada,RC-GUIA-00022,,"$3,180.46",$508.87,"$3,689.33",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1201,CLI-0001,2026-09-24,Entregado,Puebla,2026-10-01,Confirmada,RC-GUIA-00023,,"$4,398.26",$703.72,"$5,101.98",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1301,CLI-0004,2026-09-25,Con incidencia,Toluca,2026-10-03,Estimada,,Faltante parcial en validacion,"$5,724.57",$915.93,"$6,640.50",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1302,CLI-0005,2026-09-26,Confirmado,CDMX,2026-09-30,Estimada,,,"$7,540.55","$1,206.49","$8,747.04",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1303,CLI-0006,2026-09-27,En preparacion,Leon,2026-10-02,Estimada,,,"$8,946.97","$1,431.52","$10,378.49",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1304,CLI-0007,2026-09-28,Embarcado,Queretaro,2026-10-04,Confirmada,RC-GUIA-00027,,"$11,127.76","$1,780.44","$12,908.20",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1305,CLI-0008,2026-09-29,En transito,Puebla,2026-10-06,Confirmada,RC-GUIA-00028,,"$13,223.06","$2,115.69","$15,338.75",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1306,CLI-0009,2026-09-30,Entregado,Toluca,2026-10-08,Confirmada,RC-GUIA-00029,,"$15,369.90","$2,459.18","$17,829.08",MXN,ERP-DEMO,Confidencial,TRUE
+RC-PED-1307,CLI-0010,2026-10-01,Con incidencia,CDMX,2026-10-05,Estimada,,Faltante parcial en validacion,"$18,422.78","$2,947.64","$21,370.42",MXN,ERP-DEMO,Confidencial,TRUE

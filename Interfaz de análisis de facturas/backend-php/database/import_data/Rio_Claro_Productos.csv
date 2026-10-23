@@ -1,0 +1,101 @@
+﻿SKU,Nombre,Categoria,Subcategoria,Presentacion,Unidad,Marca,Costo_MXN,Precio_MXN,Estado,ProveedorPrincipalID,ProveedorAlternoID,LeadTimeDias,ClasificacionDato,Synthetic
+LIM-0001,Cloro Industrial 500 ml,Quimicos,Cloro,500 ml,PZA,CleanPro,$25.35,$34.22,Activo,PROV-0001,PROV-0002,9,Interna,TRUE
+LIM-0002,Detergente Liquido 1 Litro,Quimicos,Detergente,1 Litro,PZA,SafeClean,$32.70,$45.13,Activo,PROV-0002,PROV-0003,7,Interna,TRUE
+LIM-0003,Desengrasante Cocina 5 Litros,Quimicos,Desengrasante,5 Litros,PZA,RC Paper,$40.05,$56.47,Activo,PROV-0003,PROV-0004,4,Interna,TRUE
+LIM-0004,Sanitizante 10 Litros,Sanitizacion,Desinfectante,10 Litros,PZA,FreshAir,$47.40,$68.26,Activo,PROV-0004,PROV-0005,12,Interna,TRUE
+LIM-0005,Papel Higienico 20 Litros,Papel,Higiene,20 Litros,PZA,RioClaro,$54.75,$72.27,Activo,PROV-0005,PROV-0006,5,Interna,TRUE
+LIM-0006,Escoba Unidad,Herramientas,Limpieza,Unidad,PZA,CleanPro,$62.10,$83.84,Activo,PROV-0006,PROV-0007,9,Interna,TRUE
+LIM-0007,Cubeta Caja 12,Contenedores,Manejo,Caja 12,CAJA,SafeClean,$69.45,$95.84,Activo,PROV-0007,PROV-0008,10,Interna,TRUE
+LIM-0008,Guantes Latex Caja 24,Consumibles,Proteccion,Caja 24,CAJA,RC Paper,$76.80,$108.29,Activo,PROV-0008,PROV-0009,7,Interna,TRUE
+LIM-0009,Aromatizante 500 ml,Complementos,Especializados,500 ml,PZA,FreshAir,$84.15,$121.18,Activo,PROV-0009,PROV-0010,8,Interna,TRUE
+LIM-0010,Cloro Concentrado 1 Litro,Quimicos,Cloro,1 Litro,PZA,RioClaro,$91.50,$120.78,Activo,PROV-0010,PROV-0011,10,Interna,TRUE
+LIM-0011,Detergente Polvo 5 Litros,Quimicos,Detergente,5 Litros,PZA,CleanPro,$98.85,$133.45,Activo,PROV-0011,PROV-0012,9,Interna,TRUE
+LIM-0012,Desengrasante Industrial 10 Litros,Quimicos,Desengrasante,10 Litros,PZA,SafeClean,$106.20,$146.56,Activo,PROV-0012,PROV-0013,9,Interna,TRUE
+LIM-0013,Desinfectante Hospitalario 20 Litros,Sanitizacion,Desinfectante,20 Litros,PZA,RC Paper,$113.55,$160.11,Activo,PROV-0013,PROV-0014,10,Interna,TRUE
+LIM-0014,Toalla Interdoblada Unidad,Papel,Higiene,Unidad,PZA,FreshAir,$120.90,$174.10,Activo,PROV-0014,PROV-0015,12,Interna,TRUE
+LIM-0015,Trapeador Caja 12,Herramientas,Limpieza,Caja 12,CAJA,RioClaro,$128.25,$169.29,Activo,PROV-0015,PROV-0016,12,Interna,TRUE
+LIM-0016,Basurero Caja 24,Contenedores,Manejo,Caja 24,CAJA,CleanPro,$135.60,$183.06,Activo,PROV-0016,PROV-0017,4,Interna,TRUE
+LIM-0017,Guantes Nitrilo 500 ml,Consumibles,Proteccion,500 ml,PZA,SafeClean,$142.95,$197.27,Activo,PROV-0017,PROV-0018,11,Interna,TRUE
+LIM-0018,Limpiavidrios 1 Litro,Complementos,Especializados,1 Litro,PZA,RC Paper,$150.30,$211.92,Activo,PROV-0018,PROV-0019,4,Interna,TRUE
+LIM-0019,Cloro Lavanda 5 Litros,Quimicos,Cloro,5 Litros,PZA,FreshAir,$157.65,$227.02,Activo,PROV-0019,PROV-0020,7,Interna,TRUE
+LIM-0020,Detergente Neutro 10 Litros,Quimicos,Detergente,10 Litros,PZA,RioClaro,$165.00,$217.80,Activo,PROV-0020,PROV-0021,9,Interna,TRUE
+LIM-0021,Desengrasante Biodegradable 20 Litros,Quimicos,Desengrasante,20 Litros,PZA,CleanPro,$172.35,$232.67,Activo,PROV-0021,PROV-0022,4,Interna,TRUE
+LIM-0022,Alcohol 70 Unidad,Sanitizacion,Desinfectante,Unidad,PZA,SafeClean,$179.70,$247.99,Activo,PROV-0022,PROV-0023,8,Interna,TRUE
+LIM-0023,Toalla Rollo Caja 12,Papel,Higiene,Caja 12,CAJA,RC Paper,$187.05,$263.74,Activo,PROV-0023,PROV-0024,12,Interna,TRUE
+LIM-0024,Jalador Caja 24,Herramientas,Limpieza,Caja 24,CAJA,FreshAir,$194.40,$279.94,Activo,PROV-0024,PROV-0025,4,Interna,TRUE
+LIM-0025,Contenedor Reciclaje 500 ml,Contenedores,Manejo,500 ml,PZA,RioClaro,$201.75,$266.31,Activo,PROV-0025,PROV-0026,3,Interna,TRUE
+LIM-0026,Cubrebocas 1 Litro,Consumibles,Proteccion,1 Litro,PZA,CleanPro,$209.10,$282.29,Activo,PROV-0026,PROV-0027,9,Interna,TRUE
+LIM-0027,Cera Piso 5 Litros,Complementos,Especializados,5 Litros,PZA,SafeClean,$216.45,$298.70,Activo,PROV-0027,PROV-0028,11,Interna,TRUE
+LIM-0028,Cloro Hospitalario 10 Litros,Quimicos,Cloro,10 Litros,PZA,RC Paper,$223.80,$315.56,Activo,PROV-0028,PROV-0029,10,Interna,TRUE
+LIM-0029,Detergente Industrial 20 Litros,Quimicos,Detergente,20 Litros,PZA,FreshAir,$231.15,$332.86,Activo,PROV-0029,PROV-0030,11,Interna,TRUE
+LIM-0030,Desengrasante Multiusos Unidad,Quimicos,Desengrasante,Unidad,PZA,RioClaro,$238.50,$314.82,Activo,PROV-0030,PROV-0031,7,Interna,TRUE
+LIM-0031,Alcohol Gel Caja 12,Sanitizacion,Desinfectante,Caja 12,CAJA,CleanPro,$245.85,$331.90,Activo,PROV-0031,PROV-0032,7,Interna,TRUE
+LIM-0032,Servilleta Caja 24,Papel,Higiene,Caja 24,CAJA,SafeClean,$253.20,$349.42,Activo,PROV-0032,PROV-0033,9,Interna,TRUE
+LIM-0033,Cepillo 500 ml,Herramientas,Limpieza,500 ml,PZA,RC Paper,$260.55,$367.38,Activo,PROV-0033,PROV-0034,9,Interna,TRUE
+LIM-0034,Carro de Limpieza 1 Litro,Contenedores,Manejo,1 Litro,PZA,FreshAir,$267.90,$385.78,Activo,PROV-0034,PROV-0035,12,Interna,TRUE
+LIM-0035,Fibra 5 Litros,Consumibles,Proteccion,5 Litros,PZA,RioClaro,$275.25,$363.33,Activo,PROV-0035,PROV-0036,5,Interna,TRUE
+LIM-0036,Shampoo Alfombra 10 Litros,Complementos,Especializados,10 Litros,PZA,CleanPro,$282.60,$381.51,Activo,PROV-0036,PROV-0037,3,Interna,TRUE
+LIM-0037,Cloro Industrial 20 Litros,Quimicos,Cloro,20 Litros,PZA,SafeClean,$289.95,$400.13,Activo,PROV-0037,PROV-0038,8,Interna,TRUE
+LIM-0038,Detergente Liquido Unidad,Quimicos,Detergente,Unidad,PZA,RC Paper,$297.30,$419.19,Activo,PROV-0038,PROV-0039,12,Interna,TRUE
+LIM-0039,Desengrasante Cocina Caja 12,Quimicos,Desengrasante,Caja 12,CAJA,FreshAir,$304.65,$438.70,Activo,PROV-0039,PROV-0040,3,Interna,TRUE
+LIM-0040,Sanitizante Caja 24,Sanitizacion,Desinfectante,Caja 24,CAJA,RioClaro,$312.00,$411.84,Activo,PROV-0040,PROV-0041,7,Interna,TRUE
+LIM-0041,Papel Higienico 500 ml,Papel,Higiene,500 ml,PZA,CleanPro,$319.35,$431.12,Activo,PROV-0041,PROV-0042,6,Interna,TRUE
+LIM-0042,Recogedor 1 Litro,Herramientas,Limpieza,1 Litro,PZA,SafeClean,$326.70,$450.85,Activo,PROV-0042,PROV-0043,4,Interna,TRUE
+LIM-0043,Cubeta 5 Litros,Contenedores,Manejo,5 Litros,PZA,RC Paper,$334.05,$471.01,Activo,PROV-0043,PROV-0044,9,Interna,TRUE
+LIM-0044,Paño Microfibra 10 Litros,Consumibles,Proteccion,10 Litros,PZA,FreshAir,$341.40,$491.62,Activo,PROV-0044,PROV-0045,8,Interna,TRUE
+LIM-0045,Removedor Sarro 20 Litros,Complementos,Especializados,20 Litros,PZA,RioClaro,$348.75,$460.35,Activo,PROV-0045,PROV-0046,4,Interna,TRUE
+LIM-0046,Cloro Concentrado Unidad,Quimicos,Cloro,Unidad,PZA,CleanPro,$356.10,$480.74,Activo,PROV-0046,PROV-0047,11,Interna,TRUE
+LIM-0047,Detergente Polvo Caja 12,Quimicos,Detergente,Caja 12,CAJA,SafeClean,$363.45,$501.56,Activo,PROV-0047,PROV-0048,12,Interna,TRUE
+LIM-0048,Desengrasante Industrial Caja 24,Quimicos,Desengrasante,Caja 24,CAJA,RC Paper,$370.80,$522.83,Activo,PROV-0048,PROV-0049,8,Interna,TRUE
+LIM-0049,Desinfectante Hospitalario 500 ml,Sanitizacion,Desinfectante,500 ml,PZA,FreshAir,$378.15,$544.54,Activo,PROV-0049,PROV-0050,9,Interna,TRUE
+LIM-0050,Toalla Interdoblada 1 Litro,Papel,Higiene,1 Litro,PZA,RioClaro,$385.50,$508.86,Activo,PROV-0050,PROV-0001,7,Interna,TRUE
+LIM-0051,Escoba 5 Litros,Herramientas,Limpieza,5 Litros,PZA,CleanPro,$392.85,$530.35,Activo,PROV-0001,PROV-0002,12,Interna,TRUE
+LIM-0052,Basurero 10 Litros,Contenedores,Manejo,10 Litros,PZA,SafeClean,$400.20,$552.28,Activo,PROV-0002,PROV-0003,8,Interna,TRUE
+LIM-0053,Guantes Latex 20 Litros,Consumibles,Proteccion,20 Litros,PZA,RC Paper,$407.55,$574.65,Activo,PROV-0003,PROV-0004,10,Interna,TRUE
+LIM-0054,Aromatizante Unidad,Complementos,Especializados,Unidad,PZA,FreshAir,$414.90,$597.46,Activo,PROV-0004,PROV-0005,3,Interna,TRUE
+LIM-0055,Cloro Lavanda Caja 12,Quimicos,Cloro,Caja 12,CAJA,RioClaro,$422.25,$557.37,Activo,PROV-0005,PROV-0006,8,Interna,TRUE
+LIM-0056,Detergente Neutro Caja 24,Quimicos,Detergente,Caja 24,CAJA,CleanPro,$429.60,$579.96,Activo,PROV-0006,PROV-0007,10,Interna,TRUE
+LIM-0057,Desengrasante Biodegradable 500 ml,Quimicos,Desengrasante,500 ml,PZA,SafeClean,$436.95,$602.99,Activo,PROV-0007,PROV-0008,8,Interna,TRUE
+LIM-0058,Alcohol 70 1 Litro,Sanitizacion,Desinfectante,1 Litro,PZA,RC Paper,$444.30,$626.46,Activo,PROV-0008,PROV-0009,3,Interna,TRUE
+LIM-0059,Toalla Rollo 5 Litros,Papel,Higiene,5 Litros,PZA,FreshAir,$21.65,$31.18,Activo,PROV-0009,PROV-0010,9,Interna,TRUE
+LIM-0060,Trapeador 10 Litros,Herramientas,Limpieza,10 Litros,PZA,RioClaro,$29.00,$38.28,Activo,PROV-0010,PROV-0011,4,Interna,TRUE
+LIM-0061,Contenedor Reciclaje 20 Litros,Contenedores,Manejo,20 Litros,PZA,CleanPro,$36.35,$49.07,Activo,PROV-0011,PROV-0012,12,Interna,TRUE
+LIM-0062,Guantes Nitrilo Unidad,Consumibles,Proteccion,Unidad,PZA,SafeClean,$43.70,$60.31,Activo,PROV-0012,PROV-0013,6,Interna,TRUE
+LIM-0063,Limpiavidrios Caja 12,Complementos,Especializados,Caja 12,CAJA,RC Paper,$51.05,$71.98,Activo,PROV-0013,PROV-0014,3,Interna,TRUE
+LIM-0064,Cloro Hospitalario Caja 24,Quimicos,Cloro,Caja 24,CAJA,FreshAir,$58.40,$84.10,Activo,PROV-0014,PROV-0015,9,Interna,TRUE
+LIM-0065,Detergente Industrial 500 ml,Quimicos,Detergente,500 ml,PZA,RioClaro,$65.75,$86.79,Activo,PROV-0015,PROV-0016,3,Interna,TRUE
+LIM-0066,Desengrasante Multiusos 1 Litro,Quimicos,Desengrasante,1 Litro,PZA,CleanPro,$73.10,$98.69,Activo,PROV-0016,PROV-0017,11,Interna,TRUE
+LIM-0067,Alcohol Gel 5 Litros,Sanitizacion,Desinfectante,5 Litros,PZA,SafeClean,$80.45,$111.02,Activo,PROV-0017,PROV-0018,10,Interna,TRUE
+LIM-0068,Servilleta 10 Litros,Papel,Higiene,10 Litros,PZA,RC Paper,$87.80,$123.80,Activo,PROV-0018,PROV-0019,5,Interna,TRUE
+LIM-0069,Jalador 20 Litros,Herramientas,Limpieza,20 Litros,PZA,FreshAir,$95.15,$137.02,Activo,PROV-0019,PROV-0020,9,Interna,TRUE
+LIM-0070,Carro de Limpieza Unidad,Contenedores,Manejo,Unidad,PZA,RioClaro,$102.50,$135.30,Activo,PROV-0020,PROV-0021,11,Interna,TRUE
+LIM-0071,Cubrebocas Caja 12,Consumibles,Proteccion,Caja 12,CAJA,CleanPro,$109.85,$148.30,Activo,PROV-0021,PROV-0022,5,Interna,TRUE
+LIM-0072,Cera Piso Caja 24,Complementos,Especializados,Caja 24,CAJA,SafeClean,$117.20,$161.74,Activo,PROV-0022,PROV-0023,8,Interna,TRUE
+LIM-0073,Cloro Industrial 500 ml,Quimicos,Cloro,500 ml,PZA,RC Paper,$124.55,$175.62,Activo,PROV-0023,PROV-0024,4,Interna,TRUE
+LIM-0074,Detergente Liquido 1 Litro,Quimicos,Detergente,1 Litro,PZA,FreshAir,$131.90,$189.94,Activo,PROV-0024,PROV-0025,6,Interna,TRUE
+LIM-0075,Desengrasante Cocina 5 Litros,Quimicos,Desengrasante,5 Litros,PZA,RioClaro,$139.25,$183.81,Activo,PROV-0025,PROV-0026,3,Interna,TRUE
+LIM-0076,Sanitizante 10 Litros,Sanitizacion,Desinfectante,10 Litros,PZA,CleanPro,$146.60,$197.91,Activo,PROV-0026,PROV-0027,3,Interna,TRUE
+LIM-0077,Papel Higienico 20 Litros,Papel,Higiene,20 Litros,PZA,SafeClean,$153.95,$212.45,Activo,PROV-0027,PROV-0028,4,Interna,TRUE
+LIM-0078,Cepillo Unidad,Herramientas,Limpieza,Unidad,PZA,RC Paper,$161.30,$227.43,Activo,PROV-0028,PROV-0029,7,Interna,TRUE
+LIM-0079,Cubeta Caja 12,Contenedores,Manejo,Caja 12,CAJA,FreshAir,$168.65,$242.86,Activo,PROV-0029,PROV-0030,12,Interna,TRUE
+LIM-0080,Fibra Caja 24,Consumibles,Proteccion,Caja 24,CAJA,RioClaro,$176.00,$232.32,Activo,PROV-0030,PROV-0031,7,Interna,TRUE
+LIM-0081,Shampoo Alfombra 500 ml,Complementos,Especializados,500 ml,PZA,CleanPro,$183.35,$247.52,Activo,PROV-0031,PROV-0032,3,Interna,TRUE
+LIM-0082,Cloro Concentrado 1 Litro,Quimicos,Cloro,1 Litro,PZA,SafeClean,$190.70,$263.17,Activo,PROV-0032,PROV-0033,8,Interna,TRUE
+LIM-0083,Detergente Polvo 5 Litros,Quimicos,Detergente,5 Litros,PZA,RC Paper,$198.05,$279.25,Activo,PROV-0033,PROV-0034,10,Interna,TRUE
+LIM-0084,Desengrasante Industrial 10 Litros,Quimicos,Desengrasante,10 Litros,PZA,FreshAir,$205.40,$295.78,Activo,PROV-0034,PROV-0035,8,Interna,TRUE
+LIM-0085,Desinfectante Hospitalario 20 Litros,Sanitizacion,Desinfectante,20 Litros,PZA,RioClaro,$212.75,$280.83,Activo,PROV-0035,PROV-0036,10,Interna,TRUE
+LIM-0086,Toalla Interdoblada Unidad,Papel,Higiene,Unidad,PZA,CleanPro,$220.10,$297.13,Activo,PROV-0036,PROV-0037,5,Interna,TRUE
+LIM-0087,Recogedor Caja 12,Herramientas,Limpieza,Caja 12,CAJA,SafeClean,$227.45,$313.88,Activo,PROV-0037,PROV-0038,12,Interna,TRUE
+LIM-0088,Basurero Caja 24,Contenedores,Manejo,Caja 24,CAJA,RC Paper,$234.80,$331.07,Activo,PROV-0038,PROV-0039,12,Interna,TRUE
+LIM-0089,Paño Microfibra 500 ml,Consumibles,Proteccion,500 ml,PZA,FreshAir,$242.15,$348.70,Activo,PROV-0039,PROV-0040,11,Interna,TRUE
+LIM-0090,Removedor Sarro 1 Litro,Complementos,Especializados,1 Litro,PZA,RioClaro,$249.50,$329.34,Activo,PROV-0040,PROV-0041,8,Interna,TRUE
+LIM-0091,Cloro Lavanda 5 Litros,Quimicos,Cloro,5 Litros,PZA,CleanPro,$256.85,$346.75,Activo,PROV-0041,PROV-0042,12,Interna,TRUE
+LIM-0092,Detergente Neutro 10 Litros,Quimicos,Detergente,10 Litros,PZA,SafeClean,$264.20,$364.60,Activo,PROV-0042,PROV-0043,7,Interna,TRUE
+LIM-0093,Desengrasante Biodegradable 20 Litros,Quimicos,Desengrasante,20 Litros,PZA,RC Paper,$271.55,$382.89,Activo,PROV-0043,PROV-0044,12,Interna,TRUE
+LIM-0094,Alcohol 70 Unidad,Sanitizacion,Desinfectante,Unidad,PZA,FreshAir,$278.90,$401.62,Activo,PROV-0044,PROV-0045,11,Interna,TRUE
+LIM-0095,Toalla Rollo Caja 12,Papel,Higiene,Caja 12,CAJA,RioClaro,$286.25,$377.85,Activo,PROV-0045,PROV-0046,8,Interna,TRUE
+LIM-0096,Escoba Caja 24,Herramientas,Limpieza,Caja 24,CAJA,CleanPro,$293.60,$396.36,Activo,PROV-0046,PROV-0047,7,Interna,TRUE
+LIM-0097,Contenedor Reciclaje 500 ml,Contenedores,Manejo,500 ml,PZA,SafeClean,$300.95,$415.31,Activo,PROV-0047,PROV-0048,12,Interna,TRUE
+LIM-0098,Guantes Latex 1 Litro,Consumibles,Proteccion,1 Litro,PZA,RC Paper,$308.30,$434.70,Activo,PROV-0048,PROV-0049,3,Interna,TRUE
+LIM-0099,Aromatizante 5 Litros,Complementos,Especializados,5 Litros,PZA,FreshAir,$315.65,$454.54,Activo,PROV-0049,PROV-0050,6,Interna,TRUE
+LIM-0100,Cloro Hospitalario 10 Litros,Quimicos,Cloro,10 Litros,PZA,RioClaro,$323.00,$426.36,Activo,PROV-0050,PROV-0001,9,Interna,TRUE
