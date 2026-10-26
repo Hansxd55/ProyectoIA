@@ -1,0 +1,26 @@
+﻿TicketID,ClienteID,RelacionadoID,Tipo,Categoria,Prioridad,Estado,Responsable,FechaCreacion,FechaObjetivo,SLA_Horas,Descripcion,ProximaAccion,BloqueoRetencion,ClasificacionDato,Synthetic
+RC-TIC-3001,CLI-0002,RC-PED-1101,Reclamacion,Producto danado,Alta,En investigacion,Supervisor de Servicio,01/10/26,02/10/26,8,Producto dañado reportado; validar evidencia y entrega.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3002,CLI-0002,RC-PED-1102,Reclamacion,Entrega incompleta,Alta,Asignado,Logistica,01/10/26,02/10/26,8,Faltaron tres cajas de papel.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3003,CLI-0002,RC-PED-1103,Reclamacion,Seguridad de producto,Critica,Escalado,Operaciones / Seguridad,01/10/26,02/10/26,1,Cloro con fuga; instruir no uso y contencion.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3004,CLI-0002,RC-PED-1104,Reclamacion,Entrega tardia,Alta,En investigacion,Logistica,02/10/26,03/10/26,8,Entrega dos dias tarde.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3005,CLI-0002,RC-PED-1105,Reclamacion,Producto incorrecto,Alta,Asignado,Almacen,02/10/26,03/10/26,8,SKU entregado no corresponde.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3006,CLI-0002,RC-FAC-2101,Reclamacion,Cargo no reconocido,Alta,Escalado,Finanzas,02/10/26,03/10/26,8,Cargo de factura no reconocido.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3007,CLI-0002,RC-TIC-3001,Reclamacion,SLA vencido,Alta,Escalado,Supervisor de Servicio,03/10/26,04/10/26,8,Seguimiento a ticket sin respuesta.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3008,CLI-0002,RC-PED-1106,Reclamacion,Integridad de producto,Alta,En investigacion,Operaciones,03/10/26,04/10/26,8,Detergente con sello abierto.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3009,CLI-0002,RC-PED-1107,Reclamacion,Documento faltante,Media,Asignado,Logistica,03/10/26,05/10/26,24,Remision no entregada.,Validar evidencia y comunicar siguiente paso,FALSE,Confidencial,TRUE
+RC-TIC-3010,CLI-0001,,Reclamacion,Conocimiento contradictorio,Media,Cerrado,Knowledge Owner,04/10/26,06/10/26,24,Respuesta del agente contradijo politica; evidencia retenida.,Cerrado con evidencia,TRUE,Confidencial,TRUE
+RC-TIC-3011,CLI-0001,RC-PED-1001,Servicio,Cotizacion,Alta,Cerrado,Ventas,03/10/26,04/10/26,8,Caso sintético de cotizacion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3012,CLI-0002,RC-PED-1002,Servicio,Pedido,Baja,Nuevo,Logistica,04/10/26,05/10/26,4,Caso sintético de pedido para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3013,CLI-0003,RC-PED-1003,Servicio,Facturacion,Media,Asignado,Finanzas,05/10/26,06/10/26,8,Caso sintético de facturacion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3014,CLI-0004,RC-PED-1004,Servicio,Devolucion,Alta,En investigacion,Operaciones,06/10/26,07/10/26,8,Caso sintético de devolucion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3015,CLI-0005,RC-PED-1005,Servicio,Consulta,Baja,Cerrado,Servicio al Cliente,03/10/26,04/10/26,4,Caso sintético de consulta para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3016,CLI-0006,RC-PED-1006,Servicio,Cotizacion,Media,Nuevo,Ventas,04/10/26,05/10/26,8,Caso sintético de cotizacion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3017,CLI-0007,RC-PED-1007,Servicio,Pedido,Alta,Asignado,Logistica,05/10/26,06/10/26,8,Caso sintético de pedido para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3018,CLI-0008,RC-PED-1008,Servicio,Facturacion,Baja,En investigacion,Finanzas,06/10/26,07/10/26,4,Caso sintético de facturacion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3019,CLI-0009,RC-PED-1009,Servicio,Devolucion,Media,Cerrado,Operaciones,03/10/26,04/10/26,8,Caso sintético de devolucion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3020,CLI-0010,RC-PED-1010,Servicio,Consulta,Alta,Nuevo,Servicio al Cliente,04/10/26,05/10/26,8,Caso sintético de consulta para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3021,CLI-0011,RC-PED-1011,Servicio,Cotizacion,Baja,Asignado,Ventas,05/10/26,06/10/26,4,Caso sintético de cotizacion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3022,CLI-0012,RC-PED-1012,Servicio,Pedido,Media,En investigacion,Logistica,06/10/26,07/10/26,8,Caso sintético de pedido para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3023,CLI-0013,RC-PED-1013,Servicio,Facturacion,Alta,Cerrado,Finanzas,03/10/26,04/10/26,8,Caso sintético de facturacion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3024,CLI-0014,RC-PED-1014,Servicio,Devolucion,Baja,Nuevo,Operaciones,04/10/26,05/10/26,4,Caso sintético de devolucion para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE
+RC-TIC-3025,CLI-0015,RC-PED-1015,Servicio,Consulta,Media,Asignado,Servicio al Cliente,05/10/26,06/10/26,8,Caso sintético de consulta para pruebas.,Atender conforme al SOP,FALSE,Confidencial,TRUE

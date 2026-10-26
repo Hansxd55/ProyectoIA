@@ -6,6 +6,7 @@ settings:
 
 importers:
 
+<<<<<<< HEAD
   .:
     dependencies:
       react:
@@ -760,3 +761,6 @@ snapshots:
     optionalDependencies:
       '@types/node': 24.19.2
       fsevents: 2.3.3
+=======
+  .: {}
+>>>>>>> 6a4dcbcdb4806a79ec08c3dabddd9561241da4e5

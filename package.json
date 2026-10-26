@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "proyecto-ia",
   "private": true,
   "version": "0.0.0",
@@ -22,4 +23,16 @@
     "typescript": "~6.0.3",
     "vite": "^8.3.4"
   }
+=======
+  "name": "ProyectoIA",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+>>>>>>> 6a4dcbcdb4806a79ec08c3dabddd9561241da4e5
 }

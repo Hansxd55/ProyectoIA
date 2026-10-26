@@ -1,0 +1,21 @@
+﻿ClienteID,RazonSocial,Segmento,NivelServicio,CondicionesPago,Correo,SucursalResponsable,Estado,Synthetic
+CLI-0001,Cliente Demostracion 01 SA de CV,Hotel,Silver,15 dias,contacto01@cliente01.example.test,Leon,Activo,TRUE
+CLI-0002,Cliente Demostracion 02 SA de CV,Hospital,Bronze,30 dias,contacto02@cliente02.example.test,Queretaro,Activo,TRUE
+CLI-0003,Cliente Demostracion 03 SA de CV,Escuela,Gold,Contado,contacto03@cliente03.example.test,Puebla,Activo,TRUE
+CLI-0004,Cliente Demostracion 04 SA de CV,Restaurante,Silver,15 dias,contacto04@cliente04.example.test,Toluca,Activo,TRUE
+CLI-0005,Cliente Demostracion 05 SA de CV,Comercio,Bronze,30 dias,contacto05@cliente05.example.test,CDMX,Activo,TRUE
+CLI-0006,Cliente Demostracion 06 SA de CV,Hotel,Gold,Contado,contacto06@cliente06.example.test,Leon,Activo,TRUE
+CLI-0007,Cliente Demostracion 07 SA de CV,Hospital,Silver,15 dias,contacto07@cliente07.example.test,Queretaro,Activo,TRUE
+CLI-0008,Cliente Demostracion 08 SA de CV,Escuela,Bronze,30 dias,contacto08@cliente08.example.test,Puebla,Activo,TRUE
+CLI-0009,Cliente Demostracion 09 SA de CV,Restaurante,Gold,Contado,contacto09@cliente09.example.test,Toluca,Activo,TRUE
+CLI-0010,Cliente Demostracion 10 SA de CV,Comercio,Silver,15 dias,contacto10@cliente10.example.test,CDMX,Activo,TRUE
+CLI-0011,Cliente Demostracion 11 SA de CV,Hotel,Bronze,30 dias,contacto11@cliente11.example.test,Leon,Activo,TRUE
+CLI-0012,Cliente Demostracion 12 SA de CV,Hospital,Gold,Contado,contacto12@cliente12.example.test,Queretaro,Activo,TRUE
+CLI-0013,Cliente Demostracion 13 SA de CV,Escuela,Silver,15 dias,contacto13@cliente13.example.test,Puebla,Activo,TRUE
+CLI-0014,Cliente Demostracion 14 SA de CV,Restaurante,Bronze,30 dias,contacto14@cliente14.example.test,Toluca,Activo,TRUE
+CLI-0015,Cliente Demostracion 15 SA de CV,Comercio,Gold,Contado,contacto15@cliente15.example.test,CDMX,Activo,TRUE
+CLI-0016,Cliente Demostracion 16 SA de CV,Hotel,Silver,15 dias,contacto16@cliente16.example.test,Leon,Activo,TRUE
+CLI-0017,Cliente Demostracion 17 SA de CV,Hospital,Bronze,30 dias,contacto17@cliente17.example.test,Queretaro,Activo,TRUE
+CLI-0018,Cliente Demostracion 18 SA de CV,Escuela,Gold,Contado,contacto18@cliente18.example.test,Puebla,Activo,TRUE
+CLI-0019,Cliente Demostracion 19 SA de CV,Restaurante,Silver,15 dias,contacto19@cliente19.example.test,Toluca,Activo,TRUE
+CLI-0020,Cliente Demostracion 20 SA de CV,Comercio,Bronze,30 dias,contacto20@cliente20.example.test,CDMX,Activo,TRUE

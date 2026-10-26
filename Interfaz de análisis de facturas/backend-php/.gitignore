@@ -1,0 +1,12 @@
+/.env
+/vendor/
+/node_modules/
+/public/storage
+/storage/*.key
+/storage/app/private/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/.phpunit.cache
+.DS_Store
