@@ -1,14 +1,7 @@
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { FormEvent } from 'react'
 import { login, uploadInvoice } from './api' // Conservamos las que sí funcionan directo con Laravel
-import { functionApi } from './services/functionApi' // Tu nuevo cliente para Azure
-
-// Definimos la forma de la respuesta del chat según el documento
-type ChatResponse = {
-  success: boolean;
-  session_id: string;
-  response_id: string;
-  response: string;
-};
+import { sendChatMessage } from './services/functionApi'
 function App() {
   const fileInput = useRef<HTMLInputElement>(null)
 
@@ -60,19 +53,14 @@ function App() {
     event.preventDefault()
     if (!message.trim()) return
 
-    if (!token) {
-      setChatMessages(prev => [...prev, { role: 'assistant', text: 'Por favor inicia sesión primero para chatear.' }])
-      return
-    }
-
     const userText = message.trim()
     setChatMessages(prev => [...prev, { role: 'user', text: userText }])
     setMessage('')
 
     try {
-      const data = await sendChatMessage(userText, token)
-      const reply = data.reply || data.message || 'Respuesta recibida del servidor.'
-      setChatMessages(prev => [...prev, { role: 'assistant', text: reply }])
+      const data = await sendChatMessage(userText, chatSessionId)
+      setChatSessionId(data.session_id)
+      setChatMessages(prev => [...prev, { role: 'assistant', text: data.response }])
     } catch (error: any) {
       setChatMessages(prev => [...prev, { role: 'assistant', text: `Error de conexión: ${error.message}` }])
     }
