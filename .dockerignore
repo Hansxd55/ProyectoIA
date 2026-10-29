@@ -1,0 +1,7 @@
+node_modules
+dist
+.git
+.env
+.copilot-azure
+Interfaz de análisis de facturas
+*.log

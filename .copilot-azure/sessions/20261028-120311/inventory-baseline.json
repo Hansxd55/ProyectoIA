@@ -1,0 +1,129 @@
+{
+  "phase": "baseline",
+  "createdResources": [
+    {
+      "changedTime": "2026-09-15T00:38:17.122542+00:00",
+      "createdTime": "2026-09-15T00:27:52.664323+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.CognitiveServices/accounts/ia-ear-resource",
+      "identity": {
+        "principalId": "476fbd0c-2d04-405b-945e-a11dd9f93f1b",
+        "tenantId": "799bd0cb-438c-4214-9abe-19ea0d669df8",
+        "type": "SystemAssigned",
+        "userAssignedIdentities": null
+      },
+      "kind": "AIServices",
+      "location": "westus",
+      "managedBy": null,
+      "name": "ia-ear-resource",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "S0",
+        "size": null,
+        "tier": null
+      },
+      "systemData": {
+        "createdAt": "2026-09-15T00:27:52.6699547Z",
+        "createdBy": "enriquealons-ia@labmx.ai",
+        "createdByType": "User",
+        "lastModifiedAt": "2026-09-15T00:27:52.6699547Z",
+        "lastModifiedBy": "enriquealons-ia@labmx.ai",
+        "lastModifiedByType": "User"
+      },
+      "tags": null,
+      "type": "Microsoft.CognitiveServices/accounts"
+    },
+    {
+      "changedTime": "2026-09-15T00:38:02.417663+00:00",
+      "createdTime": "2026-09-15T00:28:02.588247+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.CognitiveServices/accounts/ia-ear-resource/projects/ia-ear",
+      "identity": {
+        "principalId": "adf3721a-172a-42b5-b65f-28ea55b9689a",
+        "tenantId": "799bd0cb-438c-4214-9abe-19ea0d669df8",
+        "type": "SystemAssigned",
+        "userAssignedIdentities": null
+      },
+      "kind": "AIServices",
+      "location": "westus",
+      "managedBy": null,
+      "name": "ia-ear-resource/ia-ear",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": null,
+      "systemData": {
+        "createdAt": "2026-09-15T00:28:02.6000566Z",
+        "createdBy": "enriquealons-ia@labmx.ai",
+        "createdByType": "User",
+        "lastModifiedAt": "2026-09-15T00:28:02.6000566Z",
+        "lastModifiedBy": "enriquealons-ia@labmx.ai",
+        "lastModifiedByType": "User"
+      },
+      "tags": null,
+      "type": "Microsoft.CognitiveServices/accounts/projects"
+    },
+    {
+      "changedTime": "2026-10-07T23:54:13.638862+00:00",
+      "createdTime": "2026-10-07T23:44:12.538149+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.Search/searchServices/ia-ear-buscador",
+      "identity": null,
+      "kind": null,
+      "location": "westus",
+      "managedBy": null,
+      "name": "ia-ear-buscador",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "serverless",
+        "size": null,
+        "tier": null
+      },
+      "systemData": {
+        "createdAt": "2026-10-07T23:44:13.457Z"
+      },
+      "tags": {},
+      "type": "Microsoft.Search/searchServices"
+    },
+    {
+      "changedTime": "2026-10-14T23:35:07.044163+00:00",
+      "createdTime": "2026-10-14T23:25:05.507190+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.BotService/botServices/ayuda-al-cliente44570",
+      "identity": null,
+      "kind": "azurebot",
+      "location": "global",
+      "managedBy": null,
+      "name": "ayuda-al-cliente44570",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "S1",
+        "size": null,
+        "tier": null
+      },
+      "tags": {},
+      "type": "Microsoft.BotService/botServices",
+      "zones": []
+    }
+  ],
+  "orphanedResourceGroups": []
+}

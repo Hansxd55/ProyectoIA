@@ -1,0 +1,115 @@
+{
+  "phase": "capture",
+  "capturedAt": "2026-10-28T12:58:00-06:00",
+  "createdResources": [
+    {
+      "changedTime": "2026-10-28T18:59:40.385227+00:00",
+      "createdTime": "2026-10-28T18:04:48.634482+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.OperationalInsights/workspaces/rioclaroweb-logs",
+      "identity": null,
+      "kind": null,
+      "location": "westus",
+      "managedBy": null,
+      "name": "rioclaroweb-logs",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": null,
+      "tags": null,
+      "type": "Microsoft.OperationalInsights/workspaces"
+    },
+    {
+      "changedTime": "2026-10-28T18:16:40.175666+00:00",
+      "createdTime": "2026-10-28T18:05:15.052973+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.App/managedEnvironments/rioclaroweb-env",
+      "identity": null,
+      "kind": null,
+      "location": "westus",
+      "managedBy": null,
+      "name": "rioclaroweb-env",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": null,
+      "systemData": {
+        "createdAt": "2026-10-28T18:05:15.1316138Z",
+        "createdBy": "enriquealons-ia@labmx.ai",
+        "createdByType": "User",
+        "lastModifiedAt": "2026-10-28T18:13:59.6700032Z",
+        "lastModifiedBy": "enriquealons-ia@labmx.ai",
+        "lastModifiedByType": "User"
+      },
+      "tags": null,
+      "type": "Microsoft.App/managedEnvironments"
+    },
+    {
+      "changedTime": "2026-10-28T18:59:19.614383+00:00",
+      "createdTime": "2026-10-28T18:05:58.602061+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.ContainerRegistry/registries/rioclarowebacr20261028",
+      "identity": null,
+      "kind": null,
+      "location": "westus",
+      "managedBy": null,
+      "name": "rioclarowebacr20261028",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": {
+        "capacity": null,
+        "family": null,
+        "model": null,
+        "name": "Basic",
+        "size": null,
+        "tier": "Basic"
+      },
+      "systemData": {
+        "createdAt": "2026-10-28T18:05:58.6175132Z",
+        "createdBy": "enriquealons-ia@labmx.ai",
+        "createdByType": "User",
+        "lastModifiedAt": "2026-10-28T18:59:19.3331178Z",
+        "lastModifiedBy": "enriquealons-ia@labmx.ai",
+        "lastModifiedByType": "User"
+      },
+      "tags": {},
+      "type": "Microsoft.ContainerRegistry/registries"
+    },
+    {
+      "changedTime": "2026-10-28T19:00:19.543953+00:00",
+      "createdTime": "2026-10-28T18:07:57.383091+00:00",
+      "extendedLocation": null,
+      "id": "/subscriptions/6c1409ef-d235-43cd-8366-becf8e600798/resourceGroups/rg-enriquealons-ia-2348/providers/Microsoft.App/containerApps/rioclaroweb",
+      "identity": {
+        "principalId": "024987dc-84d6-488b-b315-13a46d92153f",
+        "tenantId": "799bd0cb-438c-4214-9abe-19ea0d669df8",
+        "type": "SystemAssigned",
+        "userAssignedIdentities": null
+      },
+      "kind": null,
+      "location": "westus",
+      "managedBy": null,
+      "name": "rioclaroweb",
+      "plan": null,
+      "properties": null,
+      "provisioningState": "Succeeded",
+      "resourceGroup": "rg-enriquealons-ia-2348",
+      "sku": null,
+      "systemData": {
+        "createdAt": "2026-10-28T18:07:57.3992377Z",
+        "createdBy": "enriquealons-ia@labmx.ai",
+        "createdByType": "User",
+        "lastModifiedAt": "2026-10-28T18:59:44.3344984Z",
+        "lastModifiedBy": "enriquealons-ia@labmx.ai",
+        "lastModifiedByType": "User"
+      },
+      "tags": null,
+      "type": "Microsoft.App/containerApps"
+    }
+  ],
+  "orphanedResourceGroups": []
+}

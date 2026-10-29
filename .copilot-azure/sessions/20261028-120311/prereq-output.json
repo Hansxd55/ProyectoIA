@@ -1,0 +1,7 @@
+{
+  "azureCli": {"installed": true, "version": "2.90.0"},
+  "azureDeveloperCli": {"installed": true, "version": "1.36.0"},
+  "docker": {"installed": false},
+  "localValidation": {"build": "passed", "lint": "passed"},
+  "notes": ["Docker CLI is not installed; image build will use Azure Container Registry Tasks."]
+}

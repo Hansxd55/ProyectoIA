@@ -1,0 +1,13 @@
+{
+  "resourceGroup": "rg-enriquealons-ia-2348",
+  "region": "westus",
+  "services": [
+    {"name": "rioclaroweb", "type": "Microsoft.App/containerApps", "sku": "Consumption", "port": 3000, "ingress": "external-http"},
+    {"name": "rioclaroweb-env", "type": "Microsoft.App/managedEnvironments", "sku": "Consumption"},
+    {"name": "rioclarowebacr", "type": "Microsoft.ContainerRegistry/registries", "sku": "Basic"},
+    {"name": "rioclaroweb-logs", "type": "Microsoft.OperationalInsights/workspaces", "sku": "PerGB2018"}
+  ],
+  "template": "infra/main.bicep",
+  "gates": {"scaffoldApproval": "approved-by-user", "deployApproval": "approved-by-user"},
+  "estimatedCost": "Consumption/Basic usage-based; validate in Azure before applying"
+}

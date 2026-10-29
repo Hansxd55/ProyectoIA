@@ -1,0 +1,11 @@
+{
+  "template": "infra/main.bicep",
+  "resources": [
+    "Microsoft.ContainerRegistry/registries",
+    "Microsoft.OperationalInsights/workspaces",
+    "Microsoft.App/managedEnvironments",
+    "Microsoft.App/containerApps"
+  ],
+  "validation": "passed",
+  "imageBuild": "Docker BuildKit OCI linux/amd64 image published successfully"
+}
