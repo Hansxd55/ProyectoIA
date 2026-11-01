@@ -88,6 +88,21 @@ export type InvoiceReviewResult = {
   invoice?: InvoiceRecord
 }
 
+export type InvoiceListResult = {
+  current_page?: number
+  data: InvoiceRecord[]
+  first_page_url?: string
+  from?: number | null
+  last_page?: number
+  last_page_url?: string
+  next_page_url?: string | null
+  path?: string
+  per_page?: number
+  prev_page_url?: string | null
+  to?: number | null
+  total?: number
+}
+
 export function enviarFactura(file: File) {
   if (file.type === 'application/pdf') {
     return file.slice(0, 5).arrayBuffer().then((header) => {
@@ -111,4 +126,19 @@ export function revisarFactura(invoiceId: number, payload: InvoiceReviewPayload)
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   })
+}
+
+
+export function listarFacturas(processingStatus?: string) {
+  const params = new URLSearchParams()
+  params.set('per_page', '50')
+
+  if (processingStatus) {
+    params.set('processing_status', processingStatus)
+  }
+
+  return request<InvoiceListResult>(
+    `/api/invoices?${params.toString()}`,
+    { method: 'GET' },
+  )
 }

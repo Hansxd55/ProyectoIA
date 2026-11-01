@@ -75,6 +75,59 @@ const proxyInvoice = async (request, response) => {
   response.end(Buffer.from(await upstream.arrayBuffer()))
 }
 
+const proxyInvoiceList = async (request, response) => {
+  if (!invoiceApiBase || !invoiceApiUsername || !invoiceApiPassword) {
+    return json(response, 503, {
+      message: 'El servicio de facturas no está configurado.',
+    })
+  }
+
+  const loginResponse = await fetch(`${invoiceApiBase}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      email: invoiceApiUsername,
+      password: invoiceApiPassword,
+    }),
+  })
+
+  const loginBody = await loginResponse.json().catch(() => ({}))
+
+  if (!loginResponse.ok || typeof loginBody.token !== 'string') {
+    return json(response, 502, {
+      message: 'No fue posible autenticar el servicio de facturas.',
+    })
+  }
+
+  const localUrl = new URL(
+    request.url || '/api/invoices',
+    'http://localhost',
+  )
+
+  const upstreamUrl =
+    `${invoiceApiBase}/api/invoices${localUrl.search}`
+
+  const upstream = await fetch(upstreamUrl, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Bearer ${loginBody.token}`,
+    },
+  })
+
+  response.writeHead(upstream.status, {
+    'Content-Type':
+      upstream.headers.get('content-type') || 'application/json',
+  })
+
+  response.end(
+    Buffer.from(await upstream.arrayBuffer()),
+  )
+}
+
 const proxyInvoiceReview = async (request, response, invoiceId) => {
   if (!invoiceApiBase || !invoiceApiUsername || !invoiceApiPassword) {
     return json(response, 503, { message: 'El servicio de facturas no está configurado.' })
@@ -146,6 +199,18 @@ const server = createServer(async (request, response) => {
       if (!authenticated(request)) return json(response, 401, { message: 'Sesión requerida.' })
       if (!configurationReady) return json(response, 503, { message: 'El servicio no está configurado.' })
       if (request.method === 'POST' && request.url === '/api/invoices/document') return await proxyInvoice(request, response)
+
+      const requestUrl = new URL(
+        request.url || '/',
+        'http://localhost',
+      )
+
+      if (
+        request.method === 'GET' &&
+        requestUrl.pathname === '/api/invoices'
+      ) {
+        return await proxyInvoiceList(request, response)
+      }
 
       const invoiceReviewMatch = request.url?.match(/^\/api\/invoices\/(\d+)\/review$/)
       if (request.method === 'PATCH' && invoiceReviewMatch) {

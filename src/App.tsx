@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { consultarCEO, consultarCEOQuery, ejecutarOperacionSoporte, enviarFactura, enviarSoporte, iniciarSesion, revisarFactura } from './api'
-import type { InvoiceDocumentResult, InvoiceReviewPayload } from './api'
+import { consultarCEO, consultarCEOQuery, ejecutarOperacionSoporte, enviarFactura, enviarSoporte, iniciarSesion, revisarFactura, listarFacturas } from './api'
+import type { InvoiceDocumentResult, InvoiceReviewPayload, InvoiceRecord } from './api'
 
 type Module = 'home' | 'facturas' | 'clientes' | 'ceo'
 
@@ -79,6 +79,11 @@ function InvoiceModule() {
   const [message, setMessage] = useState('')
   const [result, setResult] = useState<InvoiceDocumentResult | null>(null)
   const [reviewBusy, setReviewBusy] = useState(false)
+  const [showInvoices, setShowInvoices] = useState(false)
+  const [invoiceList, setInvoiceList] = useState<InvoiceRecord[]>([])
+  const [invoiceListLoading, setInvoiceListLoading] = useState(false)
+  const [invoiceListError, setInvoiceListError] = useState('')
+  const [invoiceStatusFilter, setInvoiceStatusFilter] = useState('')
   const [reviewForm, setReviewForm] = useState({
     number: '',
     vendor_name: '',
@@ -101,6 +106,54 @@ function InvoiceModule() {
       total: invoice.total == null ? '' : String(invoice.total),
       currency: invoice.currency ?? 'MXN',
     })
+  }
+
+  const loadInvoices = async (status = invoiceStatusFilter) => {
+    setInvoiceListLoading(true)
+    setInvoiceListError('')
+
+    try {
+      const response = await listarFacturas(status || undefined)
+      setInvoiceList(response.data ?? [])
+    } catch (error) {
+      setInvoiceListError(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible consultar las facturas.',
+      )
+    } finally {
+      setInvoiceListLoading(false)
+    }
+  }
+
+  const openStoredInvoice = (invoice: InvoiceRecord) => {
+    const requiresReview =
+      invoice.processing_status === 'EN_REVISION'
+
+    setResult({
+      message: requiresReview
+        ? 'Factura pendiente de revisión.'
+        : 'Factura registrada en la base de datos.',
+      review_required: requiresReview,
+      processing_status:
+        invoice.processing_status ?? undefined,
+      payment_status:
+        invoice.payment_status ?? undefined,
+      review_reasons: requiresReview
+        ? ['Esta factura permanece pendiente de revisión humana.']
+        : [],
+      invoice,
+    })
+
+    setMessage(
+      requiresReview
+        ? 'Factura pendiente de revisión.'
+        : 'Factura registrada en la base de datos.',
+    )
+
+    if (requiresReview) {
+      loadReviewForm(invoice)
+    }
   }
 
   const processInvoice = async () => {
@@ -165,6 +218,10 @@ function InvoiceModule() {
         reviewed.message ??
           'Factura corregida y validada mediante revisión humana.',
       )
+
+      if (showInvoices) {
+        await loadInvoices()
+      }
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -224,6 +281,155 @@ function InvoiceModule() {
         >
           {message}
         </p>
+      )}
+
+      <div className="invoice-list-actions">
+        <button
+          className="secondary-action-button"
+          type="button"
+          onClick={async () => {
+            const next = !showInvoices
+            setShowInvoices(next)
+
+            if (next) {
+              await loadInvoices()
+            }
+          }}
+        >
+          {showInvoices
+            ? 'Ocultar facturas registradas'
+            : 'Ver facturas registradas'}
+        </button>
+      </div>
+
+      {showInvoices && (
+        <section className="invoice-list-section">
+          <div className="invoice-list-toolbar">
+            <div>
+              <p className="eyebrow">BASE DE DATOS</p>
+              <h2>Facturas registradas</h2>
+            </div>
+
+            <div className="invoice-filter">
+              <label>
+                Estado
+                <select
+                  value={invoiceStatusFilter}
+                  onChange={async (event) => {
+                    const status = event.target.value
+                    setInvoiceStatusFilter(status)
+                    await loadInvoices(status)
+                  }}
+                >
+                  <option value="">Todas</option>
+                  <option value="VALIDADA">VALIDADA</option>
+                  <option value="EN_REVISION">EN_REVISION</option>
+                </select>
+              </label>
+
+              <button
+                type="button"
+                className="secondary-action-button compact"
+                onClick={() => loadInvoices()}
+                disabled={invoiceListLoading}
+              >
+                Actualizar
+              </button>
+            </div>
+          </div>
+
+          {invoiceListLoading && (
+            <p className="status-text">
+              Consultando facturas...
+            </p>
+          )}
+
+          {invoiceListError && (
+            <p className="error">{invoiceListError}</p>
+          )}
+
+          {!invoiceListLoading &&
+            !invoiceListError &&
+            invoiceList.length === 0 && (
+              <p className="muted">
+                No hay facturas con ese filtro.
+              </p>
+            )}
+
+          {!invoiceListLoading &&
+            invoiceList.length > 0 && (
+              <div className="invoice-table-wrapper">
+                <table className="invoice-table">
+                  <thead>
+                    <tr>
+                      <th>Folio</th>
+                      <th>Proveedor</th>
+                      <th>Fecha</th>
+                      <th>Total</th>
+                      <th>Estado</th>
+                      <th>Pago</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {invoiceList.map((invoice) => (
+                      <tr key={invoice.id}>
+                        <td>{invoice.number ?? 'Sin dato'}</td>
+                        <td>
+                          {invoice.vendor_name ?? 'Sin dato'}
+                        </td>
+                        <td>
+                          {invoice.issued_at
+                            ? String(invoice.issued_at).slice(0, 10)
+                            : 'Sin dato'}
+                        </td>
+                        <td>
+                          {invoice.total ?? 'Sin dato'}{' '}
+                          {invoice.currency ?? 'MXN'}
+                        </td>
+                        <td>
+                          <span
+                            className={
+                              invoice.processing_status ===
+                              'EN_REVISION'
+                                ? 'status-badge status-review'
+                                : 'status-badge status-valid'
+                            }
+                          >
+                            {invoice.processing_status ??
+                              'SIN ESTADO'}
+                          </span>
+                        </td>
+                        <td>
+                          {invoice.payment_status ?? '—'}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className={
+                              invoice.processing_status ===
+                              'EN_REVISION'
+                                ? 'table-action review'
+                                : 'table-action'
+                            }
+                            onClick={() =>
+                              openStoredInvoice(invoice)
+                            }
+                          >
+                            {invoice.processing_status ===
+                            'EN_REVISION'
+                              ? 'Corregir'
+                              : 'Ver'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+        </section>
       )}
 
       {result?.invoice && (
