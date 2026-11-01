@@ -142,3 +142,11 @@ export function listarFacturas(processingStatus?: string) {
     { method: 'GET' },
   )
 }
+
+
+export function eliminarFactura(invoiceId: number) {
+  return request<Record<string, never>>(
+    `/api/invoices/${invoiceId}`,
+    { method: 'DELETE' },
+  )
+}

@@ -50,3 +50,10 @@
 .table-action{padding:8px 11px;border:1px solid #0f7c82;border-radius:8px;background:#fff;color:#0f7c82;font-weight:800;cursor:pointer}
 .table-action.review{border-color:#d69e2e;color:#8a5b00;background:#fffaf0}
 @media (max-width:800px){.invoice-list-toolbar,.invoice-filter{align-items:stretch;flex-direction:column}.invoice-filter select{width:100%}}
+
+
+/* ===== Eliminación de facturas ===== */
+.invoice-row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.table-action.delete{border-color:#c53030;color:#c53030;background:#fff}
+.table-action.delete:hover{background:#fff5f5}
+.table-action.delete:disabled{opacity:.5;cursor:not-allowed}

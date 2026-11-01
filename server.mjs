@@ -128,6 +128,54 @@ const proxyInvoiceList = async (request, response) => {
   )
 }
 
+const proxyInvoiceDelete = async (request, response, invoiceId) => {
+  if (!invoiceApiBase || !invoiceApiUsername || !invoiceApiPassword) {
+    return json(response, 503, {
+      message: 'El servicio de facturas no está configurado.',
+    })
+  }
+
+  const loginResponse = await fetch(`${invoiceApiBase}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      email: invoiceApiUsername,
+      password: invoiceApiPassword,
+    }),
+  })
+
+  const loginBody = await loginResponse.json().catch(() => ({}))
+
+  if (!loginResponse.ok || typeof loginBody.token !== 'string') {
+    return json(response, 502, {
+      message: 'No fue posible autenticar el servicio de facturas.',
+    })
+  }
+
+  const upstream = await fetch(
+    `${invoiceApiBase}/api/invoices/${encodeURIComponent(invoiceId)}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${loginBody.token}`,
+      },
+    },
+  )
+
+  const responseBuffer = Buffer.from(await upstream.arrayBuffer())
+
+  response.writeHead(upstream.status, {
+    'Content-Type':
+      upstream.headers.get('content-type') || 'application/json',
+  })
+
+  response.end(responseBuffer)
+}
+
 const proxyInvoiceReview = async (request, response, invoiceId) => {
   if (!invoiceApiBase || !invoiceApiUsername || !invoiceApiPassword) {
     return json(response, 503, { message: 'El servicio de facturas no está configurado.' })
@@ -215,6 +263,11 @@ const server = createServer(async (request, response) => {
       const invoiceReviewMatch = request.url?.match(/^\/api\/invoices\/(\d+)\/review$/)
       if (request.method === 'PATCH' && invoiceReviewMatch) {
         return await proxyInvoiceReview(request, response, invoiceReviewMatch[1])
+      }
+
+      const invoiceDeleteMatch = request.url?.match(/^\/api\/invoices\/(\d+)$/)
+      if (request.method === 'DELETE' && invoiceDeleteMatch) {
+        return await proxyInvoiceDelete(request, response, invoiceDeleteMatch[1])
       }
 
       if (request.method === 'POST' && request.url === '/api/support/operation') return await proxySupportOperation(request, response)

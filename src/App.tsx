@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { consultarCEO, consultarCEOQuery, ejecutarOperacionSoporte, enviarFactura, enviarSoporte, iniciarSesion, revisarFactura, listarFacturas } from './api'
+import { consultarCEO, consultarCEOQuery, ejecutarOperacionSoporte, enviarFactura, enviarSoporte, iniciarSesion, revisarFactura, listarFacturas, eliminarFactura } from './api'
 import type { InvoiceDocumentResult, InvoiceReviewPayload, InvoiceRecord } from './api'
 
 type Module = 'home' | 'facturas' | 'clientes' | 'ceo'
@@ -83,6 +83,7 @@ function InvoiceModule() {
   const [invoiceList, setInvoiceList] = useState<InvoiceRecord[]>([])
   const [invoiceListLoading, setInvoiceListLoading] = useState(false)
   const [invoiceListError, setInvoiceListError] = useState('')
+  const [deletingInvoiceId, setDeletingInvoiceId] = useState<number | null>(null)
   const [invoiceStatusFilter, setInvoiceStatusFilter] = useState('')
   const [reviewForm, setReviewForm] = useState({
     number: '',
@@ -123,6 +124,44 @@ function InvoiceModule() {
       )
     } finally {
       setInvoiceListLoading(false)
+    }
+  }
+
+  const deleteStoredInvoice = async (invoice: InvoiceRecord) => {
+    const invoiceLabel =
+      invoice.number ??
+      `ID ${invoice.id}`
+
+    const confirmed = window.confirm(
+      `¿Eliminar definitivamente la factura ${invoiceLabel}?\n\nEsta acción eliminará el registro y sus archivos asociados.`,
+    )
+
+    if (!confirmed) return
+
+    setDeletingInvoiceId(invoice.id)
+    setInvoiceListError('')
+
+    try {
+      await eliminarFactura(invoice.id)
+
+      if (result?.invoice?.id === invoice.id) {
+        setResult(null)
+        setMessage('')
+      }
+
+      await loadInvoices()
+
+      setMessage(
+        `Factura ${invoiceLabel} eliminada correctamente.`,
+      )
+    } catch (error) {
+      setInvoiceListError(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible eliminar la factura.',
+      )
+    } finally {
+      setDeletingInvoiceId(null)
     }
   }
 
@@ -405,23 +444,40 @@ function InvoiceModule() {
                           {invoice.payment_status ?? '—'}
                         </td>
                         <td>
-                          <button
-                            type="button"
-                            className={
-                              invoice.processing_status ===
+                          <div className="invoice-row-actions">
+                            <button
+                              type="button"
+                              className={
+                                invoice.processing_status ===
+                                'EN_REVISION'
+                                  ? 'table-action review'
+                                  : 'table-action'
+                              }
+                              onClick={() =>
+                                openStoredInvoice(invoice)
+                              }
+                            >
+                              {invoice.processing_status ===
                               'EN_REVISION'
-                                ? 'table-action review'
-                                : 'table-action'
-                            }
-                            onClick={() =>
-                              openStoredInvoice(invoice)
-                            }
-                          >
-                            {invoice.processing_status ===
-                            'EN_REVISION'
-                              ? 'Corregir'
-                              : 'Ver'}
-                          </button>
+                                ? 'Corregir'
+                                : 'Ver'}
+                            </button>
+
+                            <button
+                              type="button"
+                              className="table-action delete"
+                              disabled={
+                                deletingInvoiceId === invoice.id
+                              }
+                              onClick={() =>
+                                deleteStoredInvoice(invoice)
+                              }
+                            >
+                              {deletingInvoiceId === invoice.id
+                                ? 'Eliminando...'
+                                : 'Eliminar'}
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
