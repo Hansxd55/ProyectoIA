@@ -46,6 +46,48 @@ export function consultarCEOQuery(domain: string, startDate: string, endDate: st
   }) })
 }
 
+export type InvoiceRecord = {
+  id: number
+  number?: string | null
+  vendor_name?: string | null
+  vendor_tax_id?: string | null
+  issued_at?: string | null
+  subtotal?: string | number | null
+  tax?: string | number | null
+  total?: string | number | null
+  currency?: string | null
+  processing_status?: string | null
+  payment_status?: string | null
+}
+
+export type InvoiceDocumentResult = {
+  message?: string
+  review_required?: boolean
+  processing_status?: string | null
+  payment_status?: string | null
+  review_reasons?: string[]
+  invoice?: InvoiceRecord
+  data?: Record<string, unknown>
+}
+
+export type InvoiceReviewPayload = {
+  number?: string
+  vendor_name?: string
+  vendor_tax_id?: string
+  issued_at?: string
+  subtotal?: number
+  tax?: number
+  total?: number
+  currency?: string
+}
+
+export type InvoiceReviewResult = {
+  message?: string
+  processing_status?: string
+  payment_status?: string
+  invoice?: InvoiceRecord
+}
+
 export function enviarFactura(file: File) {
   if (file.type === 'application/pdf') {
     return file.slice(0, 5).arrayBuffer().then((header) => {
@@ -60,5 +102,13 @@ export function enviarFactura(file: File) {
 function uploadInvoiceFile(file: File) {
   const body = new FormData()
   body.append('file', file)
-  return request<{ message?: string }>('/api/invoices/document', { method: 'POST', body })
+  return request<InvoiceDocumentResult>('/api/invoices/document', { method: 'POST', body })
+}
+
+export function revisarFactura(invoiceId: number, payload: InvoiceReviewPayload) {
+  return request<InvoiceReviewResult>(`/api/invoices/${invoiceId}/review`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
 }

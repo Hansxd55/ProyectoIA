@@ -74,6 +74,51 @@ const proxyInvoice = async (request, response) => {
   response.writeHead(upstream.status, { 'Content-Type': upstream.headers.get('content-type') || 'application/json' })
   response.end(Buffer.from(await upstream.arrayBuffer()))
 }
+
+const proxyInvoiceReview = async (request, response, invoiceId) => {
+  if (!invoiceApiBase || !invoiceApiUsername || !invoiceApiPassword) {
+    return json(response, 503, { message: 'El servicio de facturas no está configurado.' })
+  }
+
+  const loginResponse = await fetch(`${invoiceApiBase}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({
+      email: invoiceApiUsername,
+      password: invoiceApiPassword,
+    }),
+  })
+
+  const loginBody = await loginResponse.json().catch(() => ({}))
+
+  if (!loginResponse.ok || typeof loginBody.token !== 'string') {
+    return json(response, 502, {
+      message: 'No fue posible autenticar el servicio de facturas.',
+    })
+  }
+
+  const payload = await body(request)
+
+  const upstream = await fetch(
+    `${invoiceApiBase}/api/invoices/${encodeURIComponent(invoiceId)}/review`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${loginBody.token}`,
+      },
+      body: payload,
+    },
+  )
+
+  response.writeHead(upstream.status, {
+    'Content-Type':
+      upstream.headers.get('content-type') || 'application/json',
+  })
+
+  response.end(Buffer.from(await upstream.arrayBuffer()))
+}
 const contentTypes = {
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -101,6 +146,12 @@ const server = createServer(async (request, response) => {
       if (!authenticated(request)) return json(response, 401, { message: 'Sesión requerida.' })
       if (!configurationReady) return json(response, 503, { message: 'El servicio no está configurado.' })
       if (request.method === 'POST' && request.url === '/api/invoices/document') return await proxyInvoice(request, response)
+
+      const invoiceReviewMatch = request.url?.match(/^\/api\/invoices\/(\d+)\/review$/)
+      if (request.method === 'PATCH' && invoiceReviewMatch) {
+        return await proxyInvoiceReview(request, response, invoiceReviewMatch[1])
+      }
+
       if (request.method === 'POST' && request.url === '/api/support/operation') return await proxySupportOperation(request, response)
       const routes = { '/api/ceo/resumen': 'ceo/resumen', '/api/ceo/chat': 'ceo/resumen', '/api/support/chat': 'chat', '/api/invoices/document': 'invoices/document' }
       if (request.method === 'POST' && routes[request.url]) return await proxy(request, response, routes[request.url])

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { consultarCEO, consultarCEOQuery, ejecutarOperacionSoporte, enviarFactura, enviarSoporte, iniciarSesion } from './api'
+import { consultarCEO, consultarCEOQuery, ejecutarOperacionSoporte, enviarFactura, enviarSoporte, iniciarSesion, revisarFactura } from './api'
+import type { InvoiceDocumentResult, InvoiceReviewPayload } from './api'
 
 type Module = 'home' | 'facturas' | 'clientes' | 'ceo'
 
@@ -76,11 +77,363 @@ function Home({ onSelect }: { onSelect: (module: Module) => void }) {
 function InvoiceModule() {
   const [file, setFile] = useState<File | null>(null)
   const [message, setMessage] = useState('')
-  return <div className="content-card"><p className="eyebrow">PROCESO DE FACTURAS</p><h1>Procesa una factura</h1><p className="muted">Carga un PDF o imagen para enviarlo al servicio de análisis.</p>
-    <label className="upload-box">Seleccionar archivo<input type="file" accept=".pdf,.png,.jpg,.jpeg" onChange={(event) => setFile(event.target.files?.[0] ?? null)} /><strong>{file?.name ?? 'PDF, PNG o JPG'}</strong></label>
-    <button className="primary-button" disabled={!file} onClick={async () => { if (!file) return; setMessage('Procesando...'); try { const result = await enviarFactura(file); setMessage(result.message ?? 'Factura enviada correctamente.') } catch (error) { setMessage(error instanceof Error ? error.message : 'No fue posible procesar la factura.') } }}>{message === 'Procesando...' ? 'Procesando...' : 'Enviar a procesar'}</button>
-    {message && <p className={message === 'Procesando...' ? 'status-text' : message.includes('correctamente') ? 'success' : 'error'}>{message}</p>}
-  </div>
+  const [result, setResult] = useState<InvoiceDocumentResult | null>(null)
+  const [reviewBusy, setReviewBusy] = useState(false)
+  const [reviewForm, setReviewForm] = useState({
+    number: '',
+    vendor_name: '',
+    vendor_tax_id: '',
+    issued_at: '',
+    subtotal: '',
+    tax: '',
+    total: '',
+    currency: 'MXN',
+  })
+
+  const loadReviewForm = (invoice: NonNullable<InvoiceDocumentResult['invoice']>) => {
+    setReviewForm({
+      number: invoice.number ?? '',
+      vendor_name: invoice.vendor_name ?? '',
+      vendor_tax_id: invoice.vendor_tax_id ?? '',
+      issued_at: invoice.issued_at ? String(invoice.issued_at).slice(0, 10) : '',
+      subtotal: invoice.subtotal == null ? '' : String(invoice.subtotal),
+      tax: invoice.tax == null ? '' : String(invoice.tax),
+      total: invoice.total == null ? '' : String(invoice.total),
+      currency: invoice.currency ?? 'MXN',
+    })
+  }
+
+  const processInvoice = async () => {
+    if (!file) return
+
+    setMessage('Procesando...')
+    setResult(null)
+
+    try {
+      const next = await enviarFactura(file)
+      setResult(next)
+      setMessage(next.message ?? 'Factura procesada.')
+
+      if (next.review_required && next.invoice) {
+        loadReviewForm(next.invoice)
+      }
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible procesar la factura.',
+      )
+    }
+  }
+
+  const submitReview = async (event: FormEvent) => {
+    event.preventDefault()
+
+    if (!result?.invoice?.id) return
+
+    setReviewBusy(true)
+    setMessage('Guardando corrección...')
+
+    const payload: InvoiceReviewPayload = {
+      number: reviewForm.number.trim(),
+      vendor_name: reviewForm.vendor_name.trim(),
+      vendor_tax_id: reviewForm.vendor_tax_id.trim(),
+      issued_at: reviewForm.issued_at,
+      subtotal: Number(reviewForm.subtotal),
+      tax: Number(reviewForm.tax),
+      total: Number(reviewForm.total),
+      currency: reviewForm.currency.trim().toUpperCase(),
+    }
+
+    try {
+      const reviewed = await revisarFactura(result.invoice.id, payload)
+
+      setResult({
+        ...result,
+        review_required: false,
+        processing_status: reviewed.processing_status ?? 'VALIDADA',
+        payment_status: reviewed.payment_status ?? 'POR_PAGAR',
+        invoice: reviewed.invoice ?? {
+          ...result.invoice,
+          ...payload,
+          processing_status: reviewed.processing_status ?? 'VALIDADA',
+          payment_status: reviewed.payment_status ?? 'POR_PAGAR',
+        },
+      })
+
+      setMessage(
+        reviewed.message ??
+          'Factura corregida y validada mediante revisión humana.',
+      )
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : 'No fue posible guardar la corrección.',
+      )
+    } finally {
+      setReviewBusy(false)
+    }
+  }
+
+  const needsReview =
+    result?.review_required === true ||
+    result?.processing_status === 'EN_REVISION'
+
+  return (
+    <div className="content-card">
+      <p className="eyebrow">PROCESO DE FACTURAS</p>
+      <h1>Procesa una factura</h1>
+      <p className="muted">
+        Carga un PDF o imagen para enviarlo al servicio de análisis.
+      </p>
+
+      <label className="upload-box">
+        Seleccionar archivo
+        <input
+          type="file"
+          accept=".pdf,.png,.jpg,.jpeg"
+          onChange={(event) => {
+            setFile(event.target.files?.[0] ?? null)
+            setMessage('')
+            setResult(null)
+          }}
+        />
+        <strong>{file?.name ?? 'PDF, PNG o JPG'}</strong>
+      </label>
+
+      <button
+        className="primary-button"
+        disabled={!file || message === 'Procesando...'}
+        onClick={processInvoice}
+      >
+        {message === 'Procesando...' ? 'Procesando...' : 'Enviar a procesar'}
+      </button>
+
+      {message && (
+        <p
+          className={
+            message === 'Procesando...' || message === 'Guardando corrección...'
+              ? 'status-text'
+              : needsReview
+                ? 'warning'
+                : result?.processing_status === 'VALIDADA'
+                  ? 'success'
+                  : 'error'
+          }
+        >
+          {message}
+        </p>
+      )}
+
+      {result?.invoice && (
+        <div className="invoice-result">
+          <div className="invoice-result-heading">
+            <h2>Resultado del análisis</h2>
+            <span
+              className={
+                needsReview
+                  ? 'status-badge status-review'
+                  : 'status-badge status-valid'
+              }
+            >
+              {result.processing_status ??
+                result.invoice.processing_status ??
+                'PROCESADA'}
+            </span>
+          </div>
+
+          <div className="invoice-summary-grid">
+            <div>
+              <span>Folio</span>
+              <strong>{result.invoice.number ?? 'Sin dato'}</strong>
+            </div>
+            <div>
+              <span>Proveedor</span>
+              <strong>{result.invoice.vendor_name ?? 'Sin dato'}</strong>
+            </div>
+            <div>
+              <span>RFC</span>
+              <strong>{result.invoice.vendor_tax_id ?? 'Sin dato'}</strong>
+            </div>
+            <div>
+              <span>Total</span>
+              <strong>
+                {result.invoice.total ?? 'Sin dato'}{' '}
+                {result.invoice.currency ?? 'MXN'}
+              </strong>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {needsReview && result?.invoice && (
+        <form className="invoice-review" onSubmit={submitReview}>
+          <div className="review-heading">
+            <div>
+              <p className="eyebrow">REVISIÓN HUMANA</p>
+              <h2>Corrige los datos detectados</h2>
+            </div>
+          </div>
+
+          {result.review_reasons && result.review_reasons.length > 0 && (
+            <div className="review-reasons">
+              <strong>Motivos de revisión</strong>
+              <ul>
+                {result.review_reasons.map((reason, index) => (
+                  <li key={`${reason}-${index}`}>{reason}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="review-grid">
+            <label>
+              Folio
+              <input
+                required
+                value={reviewForm.number}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    number: event.target.value,
+                  })
+                }
+              />
+            </label>
+
+            <label>
+              Proveedor
+              <input
+                required
+                value={reviewForm.vendor_name}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    vendor_name: event.target.value,
+                  })
+                }
+              />
+            </label>
+
+            <label>
+              RFC del proveedor
+              <input
+                required
+                minLength={8}
+                value={reviewForm.vendor_tax_id}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    vendor_tax_id: event.target.value,
+                  })
+                }
+              />
+            </label>
+
+            <label>
+              Fecha de factura
+              <input
+                required
+                type="date"
+                value={reviewForm.issued_at}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    issued_at: event.target.value,
+                  })
+                }
+              />
+            </label>
+
+            <label>
+              Subtotal
+              <input
+                required
+                type="number"
+                min="0"
+                step="0.01"
+                value={reviewForm.subtotal}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    subtotal: event.target.value,
+                  })
+                }
+              />
+            </label>
+
+            <label>
+              Impuestos
+              <input
+                required
+                type="number"
+                min="0"
+                step="0.01"
+                value={reviewForm.tax}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    tax: event.target.value,
+                  })
+                }
+              />
+            </label>
+
+            <label>
+              Total
+              <input
+                required
+                type="number"
+                min="0"
+                step="0.01"
+                value={reviewForm.total}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    total: event.target.value,
+                  })
+                }
+              />
+            </label>
+
+            <label>
+              Moneda
+              <input
+                required
+                maxLength={3}
+                value={reviewForm.currency}
+                onChange={(event) =>
+                  setReviewForm({
+                    ...reviewForm,
+                    currency: event.target.value.toUpperCase(),
+                  })
+                }
+              />
+            </label>
+          </div>
+
+          <button className="primary-button" disabled={reviewBusy}>
+            {reviewBusy ? 'Guardando...' : 'Guardar corrección y validar'}
+          </button>
+        </form>
+      )}
+
+      {result &&
+        !needsReview &&
+        result.processing_status === 'VALIDADA' && (
+          <div className="validation-confirmation">
+            <strong>Factura validada</strong>
+            <span>
+              Estado de pago:{' '}
+              {result.payment_status ??
+                result.invoice?.payment_status ??
+                'POR_PAGAR'}
+            </span>
+          </div>
+        )}
+    </div>
+  )
 }
 
 function SupportModule() {
