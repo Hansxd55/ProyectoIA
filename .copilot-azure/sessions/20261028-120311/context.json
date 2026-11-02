@@ -5,5 +5,14 @@
   "region": "westus",
   "approved": true,
   "target": "rioclaroweb",
-  "createdAt": "2026-10-28T12:03:11-06:00"
+  "createdAt": "2026-10-28T12:03:11-06:00",
+  "completedPhases": [
+    "prereq",
+    "prepare",
+    "scaffold",
+    "deploy"
+  ],
+  "currentPhase": null,
+  "statusSummary": "healthy, RG: rg-enriquealons-ia-2348",
+  "lastModifiedUtc": "2026-11-02T23:01:13Z"
 }

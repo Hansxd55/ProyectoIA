@@ -1,8 +1,19 @@
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, { ...init, credentials: 'include' })
-  const body = await response.json().catch(() => ({})) as { message?: string; error?: string | { message?: string } }
+  const body = await response.json().catch(() => ({})) as {
+    message?: string
+    error?: string | { code?: string; message?: string; details?: unknown }
+    details?: unknown
+  }
   const errorMessage = typeof body.error === 'string' ? body.error : body.error?.message
-  if (!response.ok) throw new Error(body.message ?? errorMessage ?? `Solicitud fallida (${response.status}).`)
+  if (!response.ok) {
+    const detail = typeof body.error === 'object' && body.error.details
+      ? ` (${JSON.stringify(body.error.details)})`
+      : body.details
+        ? ` (${JSON.stringify(body.details)})`
+        : ''
+    throw new Error(body.message ?? errorMessage ?? `Solicitud fallida (${response.status})${detail}.`)
+  }
   return body as T
 }
 
@@ -25,7 +36,16 @@ export function consultarCEO() {
   return request<Record<string, unknown>>('/api/ceo/resumen', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ceoPayload()) })
 }
 
-export type ChatResult = { response?: string; message?: string; session_id?: string }
+export type ChatResult = {
+  response?: string
+  message?: string
+  session_id?: string
+  pending_action?: string
+  context?: Record<string, unknown>
+  data?: Record<string, unknown>
+  success?: boolean
+  error?: string | { code?: string; message?: string; details?: unknown }
+}
 export type SupportOperation = 'cliente-consultar' | 'inventario-consultar' | 'pedido-consultar' | 'pedido-crear' | 'ticket-consultar' | 'ticket-crear'
 
 export function enviarSoporte(message: string, sessionId?: string) {
@@ -45,14 +65,14 @@ export function ejecutarOperacionSoporte(operation: SupportOperation, payload: R
   })
 }
 
-export function consultarCEOQuery(domain: string, startDate: string, endDate: string, question?: string) {
+export function consultarCEOQuery(domain: string, startDate?: string, endDate?: string, question?: string) {
   return request<Record<string, unknown>>('/api/ceo/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
     agente: 'Agente-CEO',
     agent_name: 'Agente-CEO',
     instrucciones: 'Responde como Agente-CEO con resumen ejecutivo y detalle accionable.',
     incluir: [domain],
-    fecha_inicio: startDate,
-    fecha_fin: endDate,
+    ...(startDate ? { fecha_inicio: startDate } : {}),
+    ...(endDate ? { fecha_fin: endDate } : {}),
     comparar_periodo_anterior: true,
     incluir_ia: true,
     ...(question ? { pregunta: question } : {}),

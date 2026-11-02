@@ -41,17 +41,67 @@ const supportOperationRoutes = {
   'ticket-consultar': 'tickets/consultar',
   'ticket-crear': 'tickets/crear',
 }
+const normalizeText = (value) => String(value || '').trim().toLocaleLowerCase('es-MX').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+const catalogValue = (value, aliases, fallback) => aliases[normalizeText(value)] || fallback
+const normalizeSupportPayload = (operation, payload) => {
+  if (operation === 'pedido-crear') {
+    return {
+      ...payload,
+      cliente_id: String(payload.cliente_id || '').trim(),
+      items: Array.isArray(payload.items)
+        ? payload.items.map((item) => ({
+          ...item,
+          sku: String(item.sku || '').trim().toUpperCase(),
+          cantidad: Number(item.cantidad),
+        }))
+        : payload.items,
+    }
+  }
+  if (operation === 'ticket-crear') {
+    const type = catalogValue(payload.tipo, {
+      reclamacion: 'Reclamacion',
+      reclamo: 'Reclamacion',
+      queja: 'Reclamacion',
+      incidente: 'Incidencia',
+      incidencia: 'Incidencia',
+      soporte: 'Soporte',
+      consulta: 'Consulta',
+      servicio: 'Servicio',
+    }, 'Soporte')
+    const priority = catalogValue(payload.prioridad, {
+      baja: 'Baja',
+      normal: 'Media',
+      media: 'Media',
+      alta: 'Alta',
+      critica: 'Critica',
+      urgente: 'Critica',
+    }, 'Media')
+    return {
+      ...payload,
+      cliente_id: String(payload.cliente_id || '').trim().toUpperCase(),
+      relacionado_id: payload.relacionado_id ? String(payload.relacionado_id).trim().toUpperCase() : null,
+      tipo: type,
+      categoria: String(payload.categoria || type).trim(),
+      prioridad: priority,
+      descripcion: String(payload.descripcion || '').trim(),
+    }
+  }
+  return payload
+}
 const proxySupportOperation = async (request, response) => {
   const input = JSON.parse((await body(request)).toString() || '{}')
   const route = supportOperationRoutes[input.operation]
   if (!route || !input.payload || typeof input.payload !== 'object') return json(response, 400, { message: 'La operación de soporte no es válida.' })
+  const normalizedPayload = normalizeSupportPayload(input.operation, input.payload)
   const upstream = await fetch(`${functionBase}/api/${route}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'x-functions-key': functionKey },
-    body: JSON.stringify(input.payload),
+    body: JSON.stringify(normalizedPayload),
   })
-  response.writeHead(upstream.status, { 'Content-Type': upstream.headers.get('content-type') || 'application/json' })
-  response.end(Buffer.from(await upstream.arrayBuffer()))
+  const responseBuffer = Buffer.from(await upstream.arrayBuffer())
+  const contentType = upstream.headers.get('content-type') || 'application/json'
+  response.writeHead(upstream.status, { 'Content-Type': contentType })
+  response.end(responseBuffer)
 }
 const proxyInvoice = async (request, response) => {
   if (!invoiceApiBase || !invoiceApiUsername || !invoiceApiPassword) return json(response, 503, { message: 'El servicio de facturas no está configurado.' })
@@ -127,6 +177,95 @@ const proxyInvoiceList = async (request, response) => {
   response.end(
     Buffer.from(await upstream.arrayBuffer()),
   )
+}
+
+const fetchInvoiceSummary = async (from, to) => {
+  if (!invoiceApiBase || !invoiceApiUsername || !invoiceApiPassword) return null
+  const loginResponse = await fetch(`${invoiceApiBase}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    body: JSON.stringify({ email: invoiceApiUsername, password: invoiceApiPassword }),
+  })
+  const loginBody = await loginResponse.json().catch(() => ({}))
+  if (!loginResponse.ok || typeof loginBody.token !== 'string') return null
+  const params = new URLSearchParams()
+  if (from) params.set('from', from)
+  if (to) params.set('to', to)
+  const upstream = await fetch(`${invoiceApiBase}/api/invoices/summary?${params.toString()}`, {
+    headers: { Accept: 'application/json', Authorization: `Bearer ${loginBody.token}` },
+  })
+  if (upstream.ok) return upstream.json().catch(() => null)
+
+  const listResponse = await fetch(`${invoiceApiBase}/api/invoices?per_page=1000`, {
+    headers: { Accept: 'application/json', Authorization: `Bearer ${loginBody.token}` },
+  })
+  if (!listResponse.ok) return null
+  const listBody = await listResponse.json().catch(() => ({}))
+  const rows = Array.isArray(listBody.data) ? listBody.data : []
+  const today = new Date()
+  const periodEnd = to || today.toISOString().slice(0, 10)
+  const periodStart = from || new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10)
+  const start = new Date(`${periodStart}T00:00:00Z`)
+  const end = new Date(`${periodEnd}T23:59:59Z`)
+  const days = Math.max(1, Math.floor((end.getTime() - start.getTime()) / 86400000) + 1)
+  const previousEnd = new Date(start.getTime() - 86400000)
+  const previousStart = new Date(previousEnd.getTime() - (days - 1) * 86400000)
+  const aggregate = (rangeStart, rangeEnd) => {
+    const selected = rows.filter((row) => {
+      const issuedAt = new Date(`${String(row.issued_at || '').slice(0, 10)}T12:00:00Z`)
+      return !Number.isNaN(issuedAt.getTime()) && issuedAt >= rangeStart && issuedAt <= rangeEnd
+    })
+    const group = (field, fallback) => Object.entries(selected.reduce((result, row) => {
+      const key = row[field] || fallback
+      result[key] = (result[key] || 0) + 1
+      return result
+    }, {})).map(([estado, total]) => ({ estado, total }))
+    return {
+      total_emitidas: selected.length,
+      importe_facturado: selected.reduce((total, row) => total + Number(row.total || 0), 0),
+      por_moneda: group('currency', 'SIN_MONEDA'),
+      por_estado: group('processing_status', 'SIN_ESTADO'),
+      por_pago: group('payment_status', 'SIN_ESTADO'),
+    }
+  }
+  return {
+    periodo: { fecha_inicio: periodStart, fecha_fin: periodEnd },
+    facturas: aggregate(start, end),
+    comparativo: aggregate(previousStart, previousEnd),
+  }
+}
+
+const proxyCeo = async (request, response) => {
+  const payload = JSON.parse((await body(request)).toString() || '{}')
+  const invoiceSummary = await fetchInvoiceSummary(payload.fecha_inicio, payload.fecha_fin)
+  const enrichedPayload = invoiceSummary
+    ? {
+      ...payload,
+      contexto_operativo: {
+        ...(payload.contexto_operativo || {}),
+        facturas: invoiceSummary,
+      },
+      incluir: Array.from(new Set([...(payload.incluir || []), 'facturas'])),
+    }
+    : payload
+  const upstream = await fetch(`${functionBase}/api/ceo/resumen`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'x-functions-key': functionKey },
+    body: JSON.stringify(enrichedPayload),
+  })
+  const upstreamBody = await upstream.json().catch(() => ({}))
+  if (invoiceSummary && upstreamBody && typeof upstreamBody === 'object') {
+    upstreamBody.datos = {
+      ...(upstreamBody.datos || {}),
+      facturas: invoiceSummary.facturas,
+    }
+    upstreamBody.comparativos = {
+      ...(upstreamBody.comparativos || {}),
+      facturas: invoiceSummary.comparativo,
+    }
+  }
+  response.writeHead(upstream.status, { 'Content-Type': 'application/json' })
+  response.end(JSON.stringify(upstreamBody))
 }
 
 const proxyInvoiceDelete = async (request, response, invoiceId) => {
@@ -272,7 +411,8 @@ const server = createServer(async (request, response) => {
       }
 
       if (request.method === 'POST' && request.url === '/api/support/operation') return await proxySupportOperation(request, response)
-      const routes = { '/api/ceo/resumen': 'ceo/resumen', '/api/ceo/chat': 'ceo/resumen', '/api/support/chat': 'chat', '/api/invoices/document': 'invoices/document' }
+      if (request.method === 'POST' && (request.url === '/api/ceo/resumen' || request.url === '/api/ceo/chat')) return await proxyCeo(request, response)
+      const routes = { '/api/support/chat': 'chat', '/api/invoices/document': 'invoices/document' }
       if (request.method === 'POST' && routes[request.url]) return await proxy(request, response, routes[request.url])
       return json(response, 404, { message: 'Ruta no encontrada.' })
     }

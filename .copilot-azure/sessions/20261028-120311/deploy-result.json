@@ -118,7 +118,11 @@
     "rioclaroweb-app-20261028-r2",
     "rioclaroweb-app-20261028-r3",
     "rioclaroweb-app-20261028-r4",
-    "rioclaroweb-app-20261028-r5"
+    "rioclaroweb-app-20261028-r5",
+    "rioclaroweb-code-20261102",
+    "rioclaroweb-code-20261102-r2",
+    "rioclaroweb-code-20261102-r3",
+    "rioclaroweb-code-20261102-r4"
   ],
   "resourceGroup": "rg-enriquealons-ia-2348",
   "region": "westus",
@@ -126,7 +130,7 @@
   "fqdn": "rioclaroweb.whitemeadow-479b66b4.westus.azurecontainerapps.io",
   "revision": "rioclaroweb--latest",
   "provisioningState": "Succeeded",
-  "image": "rioclarowebacr20261028.azurecr.io/rioclaroweb:20261028-1255",
+  "image": "rioclarowebacr20261028.azurecr.io/rioclaroweb:latest",
   "failure": null,
   "migrations": {
     "status": "not-applicable",

@@ -173,7 +173,7 @@ resource app 'Microsoft.App/containerApps@2023-05-01' = {
 }
 
 resource acrPullRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(registry.id, containerAppName, 'acrpull-v2')
+  name: guid(registry.id, containerAppName, 'acrpull-v3')
   scope: registry
   properties: {
     roleDefinitionId: subscriptionResourceId(

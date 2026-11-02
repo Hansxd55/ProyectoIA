@@ -36,6 +36,11 @@ Route::middleware('auth:sanctum')->group(function () {
         [InvoiceController::class, 'index']
     );
 
+    Route::get(
+        'invoices/summary',
+        [InvoiceController::class, 'summary']
+    );
+
     Route::post(
         'invoices',
         [InvoiceController::class, 'store']

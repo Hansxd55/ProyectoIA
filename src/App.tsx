@@ -740,8 +740,8 @@ type NewCustomerField = 'razon_social' | 'segmento' | 'nivel_servicio' | 'condic
 async function handleSupportInput(text: string, flow: SupportFlow, sessionId?: string): Promise<{ flow: SupportFlow; reply: string; sessionId?: string }> {
   const normalized = text.toLocaleLowerCase('es-MX')
   if (flow.kind === 'idle') {
-    if (/(crear|levantar|registrar).*(pedido)|pedido.*(crear|levantar)/i.test(normalized)) return { flow: { kind: 'order-customer', intent: 'create' }, reply: 'Para crear el pedido, indica el ClienteID existente o escribe **nuevo** para registrar al cliente.' }
-    if (/(crear|levantar|registrar).*(ticket|incidencia|reporte)|ticket.*(crear|levantar)/i.test(normalized)) return { flow: { kind: 'ticket-customer', type: normalized.includes('incidencia') ? 'Soporte' : normalized.includes('reporte') ? 'Consulta' : 'Soporte' }, reply: 'Para levantar el ticket, indica el ClienteID. Después solicitaré el tipo, descripción, categoría y prioridad.' }
+    if (/(crear|levantar|registrar|comprar|adquirir|ordenar|solicitar).*(pedido)|pedido.*(crear|levantar|comprar|adquirir|ordenar)/i.test(normalized)) return { flow: { kind: 'order-customer', intent: 'create' }, reply: 'Para crear el pedido, indica el ClienteID existente o escribe **nuevo** para registrar al cliente.' }
+    if (/(crear|levantar|registrar|abrir|generar|reportar|reclamo|queja|incidente).*(ticket|incidencia|reporte)|ticket.*(crear|levantar|abrir|generar|reportar)/i.test(normalized)) return { flow: { kind: 'ticket-customer', type: normalized.includes('incid') ? 'Incidencia' : normalized.includes('reclam') || normalized.includes('queja') ? 'Reclamacion' : normalized.includes('reporte') ? 'Consulta' : 'Soporte' }, reply: 'Para levantar el ticket, indica el ClienteID. Después solicitaré el tipo, descripción, categoría y prioridad.' }
     if (/(revisar|consultar|estado|seguimiento|rastrear|d[oó]nde).*(pedido)|pedido.*(revisar|consultar|estado|seguimiento|rastrear)/i.test(normalized)) {
       const [customerId, orderId] = text.split('|').map((part) => part.trim())
       const naturalOrderId = text.match(/\bPED-[A-Z0-9-]+\b/i)?.[0]
@@ -836,14 +836,30 @@ async function handleSupportInput(text: string, flow: SupportFlow, sessionId?: s
     if (!customer.found) return { flow, reply: 'No encontré ese ClienteID en Azure SQL. Verifica el identificador e inténtalo de nuevo.' }
     return { flow: { kind: 'ticket-type', customerId: text }, reply: 'Indica el tipo de ticket: Soporte, Incidencia, Reclamación o Consulta.' }
   }
-  if (flow.kind === 'ticket-type') return { flow: { kind: 'ticket-description', customerId: flow.customerId, type: normalized.includes('incidencia') ? 'Soporte' : normalized.includes('reclam') ? 'Reclamacion' : normalized.includes('consulta') ? 'Consulta' : 'Soporte' }, reply: 'Describe el problema y agrega la prioridad al final: descripción | baja, media, alta o critica.' }
+  if (flow.kind === 'ticket-type') return { flow: { kind: 'ticket-description', customerId: flow.customerId, type: normalized.includes('incid') ? 'Incidencia' : normalized.includes('reclam') || normalized.includes('queja') ? 'Reclamacion' : normalized.includes('consulta') ? 'Consulta' : 'Soporte' }, reply: 'Describe el problema y agrega la prioridad al final: descripción | baja, media, alta o critica.' }
   const [description, priority = 'media'] = text.split('|').map((part) => part.trim())
-  const result = await ejecutarOperacionSoporte('ticket-crear', { cliente_id: flow.customerId, tipo: flow.type, categoria: flow.type, prioridad: priority, descripcion: description })
+  const relatedId = text.match(/\b(?:RC-)?(?:PED|FAC|TIC)-[A-Z0-9-]+\b/i)?.[0]
+  const result = await ejecutarOperacionSoporte('ticket-crear', {
+    cliente_id: flow.customerId,
+    relacionado_id: relatedId,
+    tipo: flow.type,
+    categoria: flow.type,
+    prioridad: priority,
+    descripcion: description,
+  })
   return { flow: { kind: 'idle' }, reply: formatOperation(result) }
 }
 
 function formatOperation(result: Record<string, unknown>) {
-  if (result.success === false) throw new Error(typeof result.message === 'string' ? result.message : 'La operación no pudo completarse.')
+  if (result.success === false) {
+    const error = result.error
+    const errorMessage = typeof error === 'string'
+      ? error
+      : error && typeof error === 'object' && 'message' in error && typeof error.message === 'string'
+        ? error.message
+        : undefined
+    throw new Error(typeof result.message === 'string' ? result.message : errorMessage ?? 'La operación no pudo completarse.')
+  }
   const entity = result.pedido ?? result.ticket ?? result.clientes ?? result.productos
   if (Array.isArray(entity)) return entity.length ? `Encontré ${entity.length} registro(s) en Azure SQL:\n\n${entity.map((item) => Object.entries(item as Record<string, unknown>).filter(([key]) => !['Synthetic', 'ClasificacionDato'].includes(key)).map(([key, value]) => `- ${key}: ${value ?? 'sin dato'}`).join('\n')).join('\n\n')}` : 'No encontré registros con esos datos.'
   if (entity && typeof entity === 'object') return `Operación completada correctamente.\n\n${Object.entries(entity as Record<string, unknown>).filter(([key]) => !['Synthetic', 'ClasificacionDato'].includes(key)).slice(0, 12).map(([key, value]) => `- ${key}: ${value ?? 'sin dato'}`).join('\n')}`
@@ -877,16 +893,11 @@ function CeoModule() {
       return
     }
     const range = parseDateRange(text) ?? lastRange
-    if (!range) {
-      setPendingDomain(domain)
-      setMessages((current) => [...current, { role: 'assistant', text: `Para revisar **${domain}** necesito un **rango de fechas**.\n\nSi quieres, dime algo como:\n- **hoy**\n- **esta semana**\n- **este mes**\n- **del 1 al 28 de octubre de 2026**\n\nCon eso te preparo un resumen ejecutivo.` }])
-      return
-    }
     setBusy(true)
     try {
-      const result = await consultarCEOQuery(domain, range.start, range.end, text)
+      const result = await consultarCEOQuery(domain, range?.start, range?.end, text)
       setPendingDomain(undefined)
-      setLastRange(range)
+      if (range) setLastRange(range)
       setMessages((current) => [...current, { role: 'assistant', text: formatCeoAnswer(result, domain) }])
     } catch (reason) {
       setMessages((current) => [...current, { role: 'assistant', text: reason instanceof Error ? reason.message : 'No fue posible consultar el informe CEO.' }])
@@ -937,16 +948,42 @@ function summarizeReport(report: Record<string, unknown>) {
 }
 
 function detectCeoDomain(text: string) {
-  const normalized = text.toLocaleLowerCase('es-MX')
-  return ['ventas', 'pedidos', 'facturas', 'inventario', 'tickets', 'clientes'].find((domain) => normalized.includes(domain))
+  const normalized = text.toLocaleLowerCase('es-MX').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const aliases: Record<string, string[]> = {
+    ventas: ['venta', 'ventas', 'ingreso', 'ingresos', 'facturacion'],
+    pedidos: ['pedido', 'pedidos', 'orden', 'ordenes', 'compra', 'compras'],
+    facturas: ['factura', 'facturas', 'comprobante', 'comprobantes', 'documento fiscal'],
+    inventario: ['inventario', 'existencia', 'existencias', 'stock'],
+    tickets: ['ticket', 'tickets', 'incidencia', 'incidencias', 'reclamo', 'reclamacion'],
+    clientes: ['cliente', 'clientes', 'cuenta', 'cuentas'],
+  }
+  return Object.entries(aliases).find(([, terms]) => terms.some((term) => normalized.includes(term)))?.[0]
 }
 
 function parseDateRange(text: string) {
-  const normalized = text.toLocaleLowerCase('es-MX')
-  if (/\b(todo|todos|histórico|historico)\b/.test(normalized)) return { start: '2000-01-01', end: '2026-10-28' }
-  if (normalized.includes('este mes') || normalized.includes('mes actual')) return { start: '2026-10-01', end: '2026-10-28' }
-  if (normalized.includes('hoy')) return { start: '2026-10-28', end: '2026-10-28' }
-  if (normalized.includes('esta semana')) return { start: '2026-10-22', end: '2026-10-28' }
+  const normalized = text.toLocaleLowerCase('es-MX').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const today = new Date()
+  const format = (date: Date) => date.toISOString().slice(0, 10)
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
+  const startOfWeek = new Date(today)
+  startOfWeek.setDate(today.getDate() - ((today.getDay() + 6) % 7))
+  if (/\b(todo|todos|historico)\b/.test(normalized)) return { start: '2000-01-01', end: format(today) }
+  if (normalized.includes('mes pasado') || normalized.includes('mes anterior')) {
+    const start = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+    return { start: format(start), end: format(new Date(today.getFullYear(), today.getMonth(), 0)) }
+  }
+  if (normalized.includes('este trimestre') || normalized.includes('trimestre actual')) {
+    const start = new Date(today.getFullYear(), Math.floor(today.getMonth() / 3) * 3, 1)
+    return { start: format(start), end: format(today) }
+  }
+  if (normalized.includes('este mes') || normalized.includes('mes actual')) return { start: format(startOfMonth), end: format(today) }
+  if (normalized.includes('ayer')) {
+    const yesterday = new Date(today)
+    yesterday.setDate(today.getDate() - 1)
+    return { start: format(yesterday), end: format(yesterday) }
+  }
+  if (normalized.includes('hoy')) return { start: format(today), end: format(today) }
+  if (normalized.includes('esta semana')) return { start: format(startOfWeek), end: format(today) }
   const match = normalized.match(/del\s+(\d{1,2})\s+al\s+(\d{1,2})\s+de\s+([a-záéíóú]+)\s+de\s+(\d{4})/)
   if (!match) return undefined
   const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
@@ -956,8 +993,8 @@ function parseDateRange(text: string) {
 }
 
 function formatCeoAnswer(report: Record<string, unknown>, domain: string) {
-  const period = report.periodo as Record<string, string>
-  const data = report.datos as Record<string, Record<string, unknown>>
+  const period = (report.periodo ?? {}) as Record<string, string>
+  const data = (report.datos ?? report.data ?? {}) as Record<string, Record<string, unknown>>
   const item = data[domain]
   if (domain === 'pedidos' && item) {
     const statuses = item.por_estado as Array<Record<string, unknown>> ?? []
@@ -967,7 +1004,8 @@ function formatCeoAnswer(report: Record<string, unknown>, domain: string) {
   }
   if (domain === 'tickets' && item) return formatTicketsAnswer(item, period)
   const analysis = report.analisis as Record<string, unknown> | undefined
-  return `**Resumen de ${domain} del ${period.fecha_inicio} al ${period.fecha_fin}**\n\n${typeof analysis?.resumen_ejecutivo === 'string' ? analysis.resumen_ejecutivo : summarizeReport(report)}`
+  const periodLabel = period.fecha_inicio && period.fecha_fin ? ` del ${period.fecha_inicio} al ${period.fecha_fin}` : ''
+  return `**Resumen de ${domain}${periodLabel}**\n\n${typeof analysis?.resumen_ejecutivo === 'string' ? analysis.resumen_ejecutivo : summarizeReport(report)}`
 }
 
 function formatTicketsAnswer(item: Record<string, unknown>, period: Record<string, string>) {

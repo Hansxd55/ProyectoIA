@@ -50,6 +50,65 @@ class InvoiceController extends Controller
         return response()->json($invoices);
     }
 
+    public function summary(Request $request): JsonResponse
+    {
+        $filters = $request->validate([
+            'from' => ['nullable', 'date'],
+            'to' => ['nullable', 'date', 'after_or_equal:from'],
+            'currency' => ['nullable', 'string', 'size:3'],
+        ]);
+
+        $periodEnd = isset($filters['to'])
+            ? now()->parse($filters['to'])->startOfDay()
+            : now()->startOfDay();
+        $periodStart = isset($filters['from'])
+            ? now()->parse($filters['from'])->startOfDay()
+            : $periodEnd->copy()->startOfMonth();
+        $days = max(1, $periodStart->diffInDays($periodEnd) + 1);
+        $previousEnd = $periodStart->copy()->subDay();
+        $previousStart = $previousEnd->copy()->subDays($days - 1);
+
+        $baseQuery = fn ($from, $to) => Invoice::query()
+            ->whereBetween('issued_at', [$from->toDateString(), $to->toDateString()])
+            ->when(
+                $filters['currency'] ?? null,
+                fn ($query, $currency) => $query->where('currency', strtoupper($currency))
+            );
+
+        $aggregate = function ($from, $to) use ($baseQuery): array {
+            $query = $baseQuery($from, $to);
+            $totals = (clone $query)
+                ->selectRaw('COUNT(*) as total_emitidas, COALESCE(SUM(total), 0) as importe_facturado')
+                ->first();
+
+            return [
+                'total_emitidas' => (int) ($totals->total_emitidas ?? 0),
+                'importe_facturado' => (float) ($totals->importe_facturado ?? 0),
+                'por_moneda' => (clone $query)
+                    ->selectRaw('currency, COUNT(*) as total, COALESCE(SUM(total), 0) as importe')
+                    ->groupBy('currency')
+                    ->get(),
+                'por_estado' => (clone $query)
+                    ->selectRaw('COALESCE(processing_status, status) as estado, COUNT(*) as total')
+                    ->groupByRaw('COALESCE(processing_status, status)')
+                    ->get(),
+                'por_pago' => (clone $query)
+                    ->selectRaw('COALESCE(payment_status, \'SIN_ESTADO\') as estado, COUNT(*) as total')
+                    ->groupByRaw('COALESCE(payment_status, \'SIN_ESTADO\')')
+                    ->get(),
+            ];
+        };
+
+        return response()->json([
+            'periodo' => [
+                'fecha_inicio' => $periodStart->toDateString(),
+                'fecha_fin' => $periodEnd->toDateString(),
+            ],
+            'facturas' => $aggregate($periodStart, $periodEnd),
+            'comparativo' => $aggregate($previousStart, $previousEnd),
+        ]);
+    }
+
     public function show(Invoice $invoice): JsonResponse
     {
         return response()->json(
