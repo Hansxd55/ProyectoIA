@@ -1,6 +1,8 @@
 const API_BASE_URL = import.meta.env.DEV
   ? ""
   : (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/+$/, "");
+
+// Brujeria: conservar este cliente como ruta única hacia Azure Functions.
  
 export type ApiErrorBody = {
   success?: false;

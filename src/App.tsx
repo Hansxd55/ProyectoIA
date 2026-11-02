@@ -1,4 +1,5 @@
 import { useState } from 'react'
+//interface FormEvent<T = Element>
 import type { FormEvent } from 'react'
 import { consultarCEO, consultarCEOQuery, ejecutarOperacionSoporte, enviarFactura, enviarSoporte, iniciarSesion } from './api'
 
@@ -45,6 +46,7 @@ function App() {
 
   return (
     <main className="app-shell">
+      <span className="watermark" aria-hidden="true">Brujeria</span>
       <header className="topbar">
         <button className="brand-button" onClick={() => setModule('home')}><img className="brand-logo top-logo" src="/rio-claro-logo.png" alt="Río Claro" /></button>
         <button className="logout-button" onClick={async () => { await fetch('/api/auth/logout', { method: 'POST' }); setAuthenticated(false); setModule('home') }}>Cerrar sesión</button>
@@ -244,7 +246,9 @@ function CeoModule() {
   const [messages, setMessages] = useState<Array<{ role: 'assistant' | 'user'; text: string }>>([])
   const [busy, setBusy] = useState(false)
   const [pendingDomain, setPendingDomain] = useState<string>()
-  const load = async () => { setError(''); try { setReport(await consultarCEO()) } catch (reason) { setError(reason instanceof Error ? reason.message : 'No fue posible consultar el informe.') } }
+  const [lastRange, setLastRange] = useState<{ start: string; end: string }>()
+  const [chartOpen, setChartOpen] = useState(false)
+  const load = async () => { setError(''); setBusy(true); try { setReport(await consultarCEO()); setChartOpen(true) } catch (reason) { setError(reason instanceof Error ? reason.message : 'No fue posible consultar el informe.') } finally { setBusy(false) } }
   const executiveText = report ? `Resumen ejecutivo del periodo ${String((report.periodo as Record<string, unknown> | undefined)?.fecha_inicio ?? '')} al ${String((report.periodo as Record<string, unknown> | undefined)?.fecha_fin ?? '')}.\n\n${summarizeReport(report)}` : ''
   const ask = async (event: FormEvent) => {
     event.preventDefault()
@@ -257,7 +261,7 @@ function CeoModule() {
       setMessages((current) => [...current, { role: 'assistant', text: 'Puedo consultar ventas, pedidos, facturas, inventario, tickets o clientes. ¿Qué indicador necesitas revisar?' }])
       return
     }
-    const range = parseDateRange(text)
+    const range = parseDateRange(text) ?? lastRange
     if (!range) {
       setPendingDomain(domain)
       setMessages((current) => [...current, { role: 'assistant', text: `Para revisar **${domain}** necesito un **rango de fechas**.\n\nSi quieres, dime algo como:\n- **hoy**\n- **esta semana**\n- **este mes**\n- **del 1 al 28 de octubre de 2026**\n\nCon eso te preparo un resumen ejecutivo.` }])
@@ -265,14 +269,45 @@ function CeoModule() {
     }
     setBusy(true)
     try {
-      const result = await consultarCEOQuery(domain, range.start, range.end)
+      const result = await consultarCEOQuery(domain, range.start, range.end, text)
       setPendingDomain(undefined)
+      setLastRange(range)
       setMessages((current) => [...current, { role: 'assistant', text: formatCeoAnswer(result, domain) }])
     } catch (reason) {
       setMessages((current) => [...current, { role: 'assistant', text: reason instanceof Error ? reason.message : 'No fue posible consultar el informe CEO.' }])
     } finally { setBusy(false) }
   }
-  return <div className="content-card"><div className="section-heading"><div><p className="eyebrow">INFORMES CEO</p><h1>Panorama ejecutivo</h1></div><button className="primary-button" onClick={load} disabled={busy}>{busy ? 'Consultando...' : 'Actualizar informe'}</button></div>{error && <p className="error">{error}</p>}{report && <div className="executive-report">{executiveText}</div>} {!report && !error && <div className="empty-report"><p>Actualiza el informe para consultar ventas, pedidos, tickets, facturas e inventario.</p></div>}<div className="ceo-chat"><h2>Consulta al CEO</h2><div className="conversation-box">{messages.length ? messages.map((item, index) => <p className={item.role === 'user' ? 'chat-user' : 'chat-assistant'} key={`${item.role}-${index}`}>{item.text}</p>) : <p className="muted">Pregunta por ventas, pedidos, tickets, facturas o inventario.</p>}</div><form className="support-form" onSubmit={ask}><input required value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ej. ¿Qué sucursal vendió más?" /><button className="primary-button" disabled={busy}>Preguntar</button></form></div></div>
+  return <div className="content-card"><div className="section-heading"><div><p className="eyebrow">INFORMES CEO</p><h1>Panorama ejecutivo</h1></div><button className="primary-button" onClick={load} disabled={busy}>{busy ? 'Consultando...' : 'Actualizar informe'}</button></div>{error && <p className="error">{error}</p>}{report && <div className="executive-report">{executiveText}<button className="secondary-button chart-trigger" type="button" onClick={() => setChartOpen(true)}>Ver gráfica del informe →</button></div>} {!report && !error && <div className="empty-report"><p>Actualiza el informe para consultar ventas, pedidos, tickets, facturas e inventario.</p></div>}<div className="ceo-chat"><h2>Consulta al CEO</h2><div className="conversation-box">{messages.length ? messages.map((item, index) => <p className={item.role === 'user' ? 'chat-user' : 'chat-assistant'} key={`${item.role}-${index}`}>{item.text}</p>) : <p className="muted">Pregunta por ventas, pedidos, tickets, facturas o inventario.</p>}</div><form className="support-form" onSubmit={ask}><input required value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="Ej. ¿Qué sucursal vendió más?" /><button className="primary-button" disabled={busy}>Preguntar</button></form></div>{report && chartOpen && <ReportChart report={report} onClose={() => setChartOpen(false)} />}</div>
+}
+
+function ReportChart({ report, onClose }: { report: Record<string, unknown>; onClose: () => void }) {
+  const points = chartPoints(report)
+  const max = Math.max(...points.map((point) => point.value), 1)
+  return <div className="chart-modal" role="dialog" aria-modal="true" aria-labelledby="chart-title">
+    <div className="chart-panel">
+      <div className="section-heading"><div><p className="eyebrow">ACTUALIZACIÓN VISUAL</p><h2 id="chart-title">Indicadores del informe</h2></div><button className="close-button" type="button" onClick={onClose} aria-label="Cerrar gráfica">×</button></div>
+      <div className="chart-bars">{points.map((point) => <div className="chart-item" key={point.label}><div className="chart-value">{formatChartValue(point.value, point.currency)}</div><div className="chart-bar-track"><div className="chart-bar" style={{ height: `${Math.max((point.value / max) * 100, 5)}%` }} /></div><span>{point.label}</span></div>)}</div>
+    </div>
+  </div>
+}
+
+function chartPoints(report: Record<string, unknown>) {
+  const data = (report.datos ?? report.data) as Record<string, Record<string, unknown>> | undefined
+  const tickets = data?.tickets
+  const points: Array<{ label: string; value: number; currency?: boolean }> = []
+  const add = (label: string, value: unknown, currency = false) => { if (typeof value === 'number') points.push({ label, value, currency }) }
+  add('Ventas', data?.ventas?.ventas_mxn, true)
+  add('Pedidos', data?.pedidos?.total)
+  add('Facturas', data?.facturas?.total_emitidas ?? data?.facturas?.total)
+  add('Tickets creados', tickets?.creados ?? tickets?.total)
+  add('Tickets abiertos', tickets?.abiertos_actuales ?? tickets?.abiertos)
+  add('Vencidos SLA', tickets?.vencidos_sla ?? tickets?.vencidos_por_sla)
+  add('Inventario crítico', data?.inventario?.items_criticos ?? data?.inventario?.registros_criticos)
+  return points.length ? points : [{ label: 'Sin indicadores', value: 0 }]
+}
+
+function formatChartValue(value: number, currency?: boolean) {
+  return currency ? value.toLocaleString('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }) : value.toLocaleString('es-MX')
 }
 
 function summarizeReport(report: Record<string, unknown>) {
@@ -293,6 +328,7 @@ function detectCeoDomain(text: string) {
 
 function parseDateRange(text: string) {
   const normalized = text.toLocaleLowerCase('es-MX')
+  if (/\b(todo|todos|histórico|historico)\b/.test(normalized)) return { start: '2000-01-01', end: '2026-10-28' }
   if (normalized.includes('este mes') || normalized.includes('mes actual')) return { start: '2026-10-01', end: '2026-10-28' }
   if (normalized.includes('hoy')) return { start: '2026-10-28', end: '2026-10-28' }
   if (normalized.includes('esta semana')) return { start: '2026-10-22', end: '2026-10-28' }
@@ -314,8 +350,17 @@ function formatCeoAnswer(report: Record<string, unknown>, domain: string) {
     const comparison = item.comparativo as Record<string, unknown> | undefined
     return `**Pedidos del ${period.fecha_inicio} al ${period.fecha_fin}**\n\n- **Total de pedidos:** ${item.total}\n- **Estados:**\n${statuses.map((status) => `  - **${status.estado}:** ${status.total}`).join('\n')}\n- **Por sucursal:**\n${branches.map((branch) => `  - **${branch.sucursal}:** ${branch.total}`).join('\n')}\n\n**Comparativo vs. periodo anterior**\n- **Periodo anterior:** ${comparison?.total_anterior ?? 'sin dato'} pedidos\n- **Variación:** **${comparison?.variacion_porcentual ?? 'sin dato'}%**\n\n**Lectura ejecutiva**\n- El volumen de pedidos del periodo es de **${item.total}**.\n- La mayor concentración está en **${branches[0]?.sucursal ?? 'sin dato'}**.\n- Conviene dar seguimiento a los pedidos con incidencia y pendientes.`
   }
+  if (domain === 'tickets' && item) return formatTicketsAnswer(item, period)
   const analysis = report.analisis as Record<string, unknown> | undefined
   return `**Resumen de ${domain} del ${period.fecha_inicio} al ${period.fecha_fin}**\n\n${typeof analysis?.resumen_ejecutivo === 'string' ? analysis.resumen_ejecutivo : summarizeReport(report)}`
+}
+
+function formatTicketsAnswer(item: Record<string, unknown>, period: Record<string, string>) {
+  const details = (item.detalle_vencidos_sla ?? item.detalle_vencidos ?? item.vencidos_detalle) as Array<Record<string, unknown>> | undefined
+  const priorities = item.por_prioridad as Array<Record<string, unknown>> | undefined
+  const statuses = item.por_estado as Array<Record<string, unknown>> | undefined
+  const detailText = details?.length ? `\n\n**Detalle de vencidos por SLA**\n${details.map((ticket) => `- **${ticket.TicketID ?? ticket.ticket_id ?? ticket.id ?? 'Ticket'}:** ${ticket.Descripcion ?? ticket.descripcion ?? 'sin descripción'} | Prioridad: ${ticket.Prioridad ?? ticket.prioridad ?? 'sin dato'} | Estado: ${ticket.Estado ?? ticket.estado ?? 'sin dato'}`).join('\n')}` : ''
+  return `**Tickets del ${period.fecha_inicio} al ${period.fecha_fin}**\n\n- **Tickets creados:** ${item.creados ?? item.total ?? 'sin dato'}\n- **Tickets abiertos actualmente:** ${item.abiertos_actuales ?? item.abiertos ?? 'sin dato'}\n- **Tickets vencidos por SLA:** ${item.vencidos_sla ?? item.vencidos_por_sla ?? 'sin dato'}\n\n**Distribución por prioridad**\n${priorities?.map((row) => `- **${row.prioridad ?? row.Prioridad ?? 'sin dato'}:** ${row.total ?? row.cantidad ?? 'sin dato'}`).join('\n') ?? '- Sin desglose disponible'}\n\n**Distribución por estado**\n${statuses?.map((row) => `- **${row.estado ?? row.Estado ?? 'sin dato'}:** ${row.total ?? row.cantidad ?? 'sin dato'}`).join('\n') ?? '- Sin desglose disponible'}${detailText}\n\n**Lectura ejecutiva**\n- El foco prioritario son los tickets vencidos por SLA.\n- Revisar primero los de prioridad crítica y alta, y después los que permanecen nuevos, abiertos o asignados.`
 }
 
 export default App

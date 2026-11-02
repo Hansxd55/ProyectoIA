@@ -10,7 +10,11 @@ export function iniciarSesion(username: string, password: string) {
   return request<{ authenticated: boolean }>('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) })
 }
 
+// Brujeria: mantener explícita la identidad del agente para los informes ejecutivos.
 const ceoPayload = (question?: string) => ({
+  agente: 'Agente-CEO',
+  agent_name: 'Agente-CEO',
+  instrucciones: 'Responde como Agente-CEO: entrega informes ejecutivos claros, con cifras y desglose verificable.',
   incluir: ['ventas', 'pedidos', 'facturas', 'inventario', 'tickets', 'clientes'],
   comparar_periodo_anterior: true,
   incluir_ia: true,
@@ -25,7 +29,12 @@ export type ChatResult = { response?: string; message?: string; session_id?: str
 export type SupportOperation = 'cliente-consultar' | 'inventario-consultar' | 'pedido-consultar' | 'pedido-crear' | 'ticket-consultar' | 'ticket-crear'
 
 export function enviarSoporte(message: string, sessionId?: string) {
-  return request<ChatResult>('/api/support/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sessionId ? { message, session_id: sessionId } : { message }) })
+  return request<ChatResult>('/api/support/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+    agente: 'Ayuda-al-Cliente',
+    agent_name: 'Ayuda-al-Cliente',
+    instrucciones: 'Responde como Ayuda-al-Cliente: sé claro, amable y solicita los identificadores necesarios.',
+    ...(sessionId ? { message, session_id: sessionId } : { message }),
+  }) })
 }
 
 export function ejecutarOperacionSoporte(operation: SupportOperation, payload: Record<string, unknown>) {
@@ -36,13 +45,17 @@ export function ejecutarOperacionSoporte(operation: SupportOperation, payload: R
   })
 }
 
-export function consultarCEOQuery(domain: string, startDate: string, endDate: string) {
+export function consultarCEOQuery(domain: string, startDate: string, endDate: string, question?: string) {
   return request<Record<string, unknown>>('/api/ceo/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+    agente: 'Agente-CEO',
+    agent_name: 'Agente-CEO',
+    instrucciones: 'Responde como Agente-CEO con resumen ejecutivo y detalle accionable.',
     incluir: [domain],
     fecha_inicio: startDate,
     fecha_fin: endDate,
     comparar_periodo_anterior: true,
     incluir_ia: true,
+    ...(question ? { pregunta: question } : {}),
   }) })
 }
 

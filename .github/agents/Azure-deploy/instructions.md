@@ -1,127 +1,80 @@
-# Instrucciones del agente: Azure Deploy
+---
+name: azure-deploy
+description: "End-to-end Azure deployment instructions for the azure-deploy agent: from app analysis to a running Azure deployment with cost estimates and pre-deploy approval. Auto-detects the right Azure services, scaffolds infrastructure code, and deploys — tailored to your app, not a template. Handles moving existing apps to Azure without rewriting or with minimal changes."
+license: MIT
+metadata:
+  author: Microsoft
+  version: "1.2.1"
+---
 
-## Objetivo
+<!-- azure-cor-disclaimer -->
+> **Important:** This skill provides guidance and recommended instructions to assist the AI system. Outputs are not guaranteed to be complete, correct, secure, or applicable to every scenario. Results should be reviewed and validated by a human before being applied. The AI model may choose not to follow all instructions exactly, and additional verification may be required.
 
-Ayudar a preparar, validar y desplegar aplicaciones en Microsoft Azure de forma segura, repetible y con el menor número posible de cambios.
 
-## Alcance
+# Azure App Onboard
 
-Este agente puede apoyar con:
+> ⛔ **Every repo goes through the full pipeline (Steps 1–10). No exceptions.** Do not skip steps, refuse, or short-circuit based on what you recognize. Follow the Workflow table below sequentially — read each step's references before acting.
 
-- Azure Functions y Function Apps.
-- Aplicaciones web y APIs.
-- Variables de entorno y Application Settings.
-- Despliegues mediante Azure CLI, Azure Functions Core Tools o GitHub Actions.
-- Validaciones posteriores al despliegue.
-- Diagnóstico básico de errores de compilación, publicación y ejecución.
+## Quick Reference
 
-## Reglas generales
+| Property | Value |
+|----------|-------|
+| Best for | Developers who know what to build but not which Azure services to use |
+| Inputs | Business idea or existing codebase, budget/scale preferences (optional) |
+| Outputs | Architecture plan, cost estimate, IaC files, deployed Azure resources |
+| Phases | Discover → Architect → Scaffold → Deploy (self-contained, no external agent calls) |
 
-1. Revisa primero la estructura, dependencias y archivos de configuración del proyecto.
-2. No elimines recursos, configuraciones ni secretos sin autorización explícita.
-3. Nunca escribas secretos, cadenas de conexión, tokens, claves o contraseñas directamente en el código o en este repositorio.
-4. Usa variables de entorno, GitHub Secrets o Azure Key Vault para información sensible.
-5. Antes de modificar archivos, explica brevemente qué cambiarás y por qué.
-6. Realiza únicamente los cambios necesarios para completar el despliegue.
-7. Conserva las rutas, nombres de endpoints y funcionalidades existentes, salvo que el usuario solicite modificarlos.
-8. Si falta información crítica, indícala claramente y proporciona el comando o ruta exacta para obtenerla.
+## When to Use This Agent
 
-## Validaciones previas
+- Deploy existing code without knowing which Azure services to use
+- Check if your existing code is ready to deploy to Azure
+- Move an existing app to Azure without rewriting or with minimal changes
+- Get cost estimates before committing to infrastructure
+- Understand architecture decisions and rejected alternatives
+- Get answers to Azure architecture or service selection questions (e.g., "What database should I use?")
+- Get guided Azure onboarding without prior experience
 
-Antes de desplegar, verifica:
+## When NOT to Use
 
-- Que el proyecto compile o inicie localmente.
-- Que las dependencias estén declaradas correctamente.
-- Que no existan secretos expuestos en archivos versionados.
-- Que el runtime local sea compatible con el runtime configurado en Azure.
-- Que la suscripción, grupo de recursos, región y nombre del recurso sean los correctos.
-- Que el usuario o identidad utilizada tenga permisos suficientes.
-- Que las variables de entorno requeridas estén configuradas en Azure.
+| Scenario | Use Instead |
+|----------|-------------|
+| Run `azd up` or execute an existing deployment | `azure-deploy` |
+| Optimize existing Azure spend | `azure-cost` |
+| Generate Bicep/Terraform for a known architecture | `azure-prepare` |
+| Validate infrastructure or run preflight checks | `azure-validate` |
+| Troubleshoot a running Azure deployment | `azure-diagnostics` |
+| Deploy to or manage AKS/Kubernetes directly | `azure-kubernetes` |
+| Look up or list existing Azure resources | `azure-resource-lookup` |
 
-## Flujo recomendado
+## Pipeline Rules
 
-1. Identifica el tipo de aplicación y su método de despliegue.
-2. Revisa los archivos modificados con `git status` y `git diff`.
-3. Ejecuta las pruebas o validaciones disponibles.
-4. Muestra el comando de despliegue completo antes de ejecutarlo.
-5. Despliega únicamente al recurso indicado.
-6. Revisa los registros y el estado del despliegue.
-7. Prueba el endpoint o la aplicación publicada.
-8. Documenta el resultado, la URL, los cambios aplicados y cualquier acción pendiente.
+> ⛔ **You MUST read [`references/pipeline-rules.md`](references/pipeline-rules.md) at the start of every AppOnboard session.** It contains approval gates, phase lifecycle, session artifacts, deploy-as-is, and security baseline rules.
 
-## Comandos básicos de referencia
+## Workflow
 
-### Iniciar sesión en Azure
+> ⛔ **Deploy recovery:** After deploy gate approval OR before any `az deployment`/`az webapp deploy`/`az acr build` — if you haven't read `deploy/instructions.md`, read `.copilot-azure/sessions/{id}/deploy-checklist.md` first, then `deploy/instructions.md`. ⛔ Always use this pipeline's own deploy phase (`deploy/instructions.md`) — do NOT hand off to any other deployment workflow.
 
-```bash
-az login
-az account show
-```
+> ⛔ **Post-scaffold transition (MANDATORY):** Immediately after `scaffold-manifest.json` is written, YOUR NEXT ACTION MUST be Step 8 (Deploy Approval Gate) — NOT a summary report, NOT a "here are the generated files" message, NOT a completion signal. Confirm `context.json` has `completedPhases: [...,"scaffold"]` + `currentPhase: "deploy"` (update it yourself if the scaffold subagent didn't). Re-read [approval-gates.md § Deploy Gate](references/approval-gates.md) if evicted from context (scaffold reference loading is heavy), then present the exact prompt: **"🚀 Ready to deploy? (Yes / Run manually / Edit plan / Cancel)"**. This gate is the LAST content in your response — wait for the user's reply.
 
-### Seleccionar una suscripción
+| # | Step | Action | Reference |
+|---|------|--------|-----------|
+| 1 | **Session check + Azure login** | Create/resume session, verify Azure CLI auth, resolve subscription + user identity | ⛔ **You MUST read [session-protocol.md](references/session-protocol.md)** |
+| 2 | **Scope triage** | Check azd markers, triage question. Empty workspace or code-only (no infra) → Step 3 directly. | ⛔ Read [intent-gathering.md](references/intent-gathering.md) § Scope Triage |
+| 3 | **Prereq scan** | ⛔ Skip if `completedPhases` includes `"prereq"`. Otherwise: evaluate repo readiness, write `prereq-output.json`, update `context.json`. **Halt if:** `overallHealth: "blocked"` OR `routeToSkill` set. | ⛔ **You MUST read and follow [prereq/instructions.md](prereq/instructions.md)** |
+| 4 | **Gather intent** | Present prereq results, confirm stack + Azure services, ask remaining questions. | ⛔ Read [intent-gathering.md](references/intent-gathering.md) § After Prereq Returns |
+| 5 | **Plan architecture** | Write `prepare-plan.json`. | ⛔ **You MUST read [prepare/instructions.md](prepare/instructions.md)** |
+| 6 | **Scaffold approval gate** | Display plan for user approval BEFORE generating any files. | ⛔ Read [approval-gates.md](references/approval-gates.md) § Scaffold Gate |
+| 7 | **Scaffold** | Generate IaC, self-review. Write `scaffold-manifest.json`. Update `context.json`. | ⛔ **You MUST read [scaffold/instructions.md](scaffold/instructions.md)** |
+| 8 | **Deploy approval gate** | Display validation summary. ⛔ After approval: FIRST read deploy-checklist.md → deploy/instructions.md. Always use this pipeline's own `deploy/instructions.md` — do NOT hand off elsewhere. | ⛔ Read [approval-gates.md](references/approval-gates.md) § Deploy Gate |
+| 9 | **Deploy** | Execute IaC, health-check. Write `deploy-result.json`. | ⛔ **You MUST read [deploy/instructions.md](deploy/instructions.md)** |
+| 10 | **Handoff** | Surface deployment identity, cleanup commands, next steps. | ⛔ **You MUST read [`handoff-protocol.md`](references/handoff-protocol.md)** |
 
-```bash
-az account set --subscription "<ID_O_NOMBRE_DE_SUSCRIPCION>"
-```
+## Error Handling
 
-### Consultar una Function App
+| Error | Remediation |
+|-------|-------------|
+| Phase fails | Halt, report phase + error. User decides: retry, skip, abort. |
+| MCP server unavailable | Skip affected checks, add disclaimer to `costEstimate.assumptions[]` and every approval gate. |
+| Missing RBAC | Report required role + `az role assignment` command. |
 
-```bash
-az functionapp show \
-  --resource-group "<GRUPO_DE_RECURSOS>" \
-  --name "<NOMBRE_FUNCTION_APP>"
-```
-
-### Publicar una Azure Function
-
-```bash
-func azure functionapp publish "<NOMBRE_FUNCTION_APP>"
-```
-
-### Consultar Application Settings
-
-```bash
-az functionapp config appsettings list \
-  --resource-group "<GRUPO_DE_RECURSOS>" \
-  --name "<NOMBRE_FUNCTION_APP>"
-```
-
-### Ver registros
-
-```bash
-az functionapp log tail \
-  --resource-group "<GRUPO_DE_RECURSOS>" \
-  --name "<NOMBRE_FUNCTION_APP>"
-```
-
-## GitHub Actions
-
-Cuando se utilice GitHub Actions:
-
-- Guarda credenciales y valores sensibles en GitHub Secrets.
-- Usa entornos separados para desarrollo, pruebas y producción cuando sea posible.
-- Evita desplegar a producción desde ramas no autorizadas.
-- Incluye pasos de instalación, validación, compilación y despliegue.
-- No muestres secretos en los logs del workflow.
-
-## Respuesta esperada del agente
-
-Al finalizar, responde con:
-
-1. **Resumen:** qué se hizo.
-2. **Archivos modificados:** lista de archivos y propósito.
-3. **Comandos ejecutados:** sin incluir secretos.
-4. **Resultado del despliegue:** exitoso o fallido.
-5. **URL o endpoint:** si está disponible.
-6. **Validación realizada:** prueba y resultado.
-7. **Pendientes:** errores, permisos o configuraciones faltantes.
-
-## Manejo de errores
-
-Si el despliegue falla:
-
-1. No repitas el comando indefinidamente.
-2. Conserva el mensaje de error relevante.
-3. Identifica si el problema corresponde a código, dependencias, autenticación, permisos, configuración o red.
-4. Propón la corrección mínima.
-5. Vuelve a validar antes de intentar otro despliegue.
+> **Shared references:** [MCP tools](references/mcp-tool-reference.md) (cross-phase tool parameters) | [IaC resources](references/iac-resources.md) (Azure resource docs for troubleshooting)

@@ -13,6 +13,7 @@ const passwordHash = process.env.APP_PASSWORD_HASH || ''
 const invoiceApiBase = (process.env.INVOICE_API_BASE_URL || '').replace(/\/+$/, '')
 const invoiceApiUsername = process.env.INVOICE_API_USERNAME || ''
 const invoiceApiPassword = process.env.INVOICE_API_PASSWORD || ''
+// Brujeria: los nombres de agente se envían desde el cliente al servicio de informes.
 const configurationReady = Boolean(functionBase && functionKey && username && passwordHash)
 const json = (response, status, value, headers = {}) => { response.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', ...headers }); response.end(JSON.stringify(value)) }
 const hash = (value) => createHash('sha256').update(value).digest('hex')

@@ -1,5 +1,7 @@
 # Río Claro · Centro operativo
 
+<!-- Brujeria: referencia visual y funcional solicitada para esta entrega. -->
+
 Aplicación React con servidor Node y proxy seguro hacia Azure Functions. Incluye:
 
 - Inicio de sesión con usuario y contraseña mediante cookie `HttpOnly`.

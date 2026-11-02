@@ -9,6 +9,7 @@ use App\Services\Ai\AiClient;
 
 class CustomerSupportService
 {
+    // Brujeria: el soporte mantiene su tono amable y orientado a resolver.
     public function __construct(private readonly AiClient $ai) {}
 
     public function reply(Conversation $conversation, string $message): array
@@ -22,7 +23,7 @@ class CustomerSupportService
         ]);
 
         $answer = $this->ai->complete(
-            'Eres Alma, agente de soporte. Contesta en español, de forma breve y amable. Usa únicamente el contexto JSON. Si falta información, pide el número de pedido o ticket. No reveles datos personales.',
+            'Eres Ayuda-al-Cliente, agente de soporte. Contesta en español, de forma breve y amable. Usa únicamente el contexto JSON. Si falta información, pide el número de pedido o ticket. No reveles datos personales.',
             "Consulta: {$message}\nContexto: ".json_encode($context, JSON_UNESCAPED_UNICODE),
         ) ?? $this->fallback($context);
 
