@@ -15,13 +15,19 @@ const modules: Array<{ id: Exclude<Module, 'home'>; title: string; description: 
 function App() {
   const [authenticated, setAuthenticated] = useState(false)
   const [module, setModule] = useState<Module>('home')
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('rio-claro-theme') === 'dark')
   const [loginError, setLoginError] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const toggleTheme = () => {
+    const nextTheme = !isDark
+    setIsDark(nextTheme)
+    localStorage.setItem('rio-claro-theme', nextTheme ? 'dark' : 'light')
+  }
 
   if (!authenticated) {
     return (
-      <main className="auth-page">
+      <main className={`auth-page${isDark ? ' theme-dark' : ''}`}>
         <form className="auth-card" onSubmit={async (event) => {
           event.preventDefault()
           setLoginError('')
@@ -46,11 +52,17 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell${isDark ? ' theme-dark' : ''}`}>
       <span className="watermark" aria-hidden="true">Brujeria</span>
       <header className="topbar">
         <button className="brand-button" onClick={() => setModule('home')}><img className="brand-logo top-logo" src="/rio-claro-logo.png" alt="Río Claro" /></button>
-        <button className="logout-button" onClick={async () => { await fetch('/api/auth/logout', { method: 'POST' }); setAuthenticated(false); setModule('home') }}>Cerrar sesión</button>
+        <div className="topbar-actions">
+          <button className="theme-switch" type="button" role="switch" aria-label="Tema oscuro" aria-checked={isDark} onClick={toggleTheme}>
+            <span>{isDark ? 'Oscuro' : 'Claro'}</span>
+            <span className="theme-switch-track" aria-hidden="true"><span className="theme-switch-thumb" /></span>
+          </button>
+          <button className="logout-button" onClick={async () => { await fetch('/api/auth/logout', { method: 'POST' }); setAuthenticated(false); setModule('home') }}>Cerrar sesión</button>
+        </div>
       </header>
       {module === 'home' ? <Home onSelect={setModule} /> : (
         <section className="module-page">
@@ -744,23 +756,23 @@ async function handleSupportInput(text: string, flow: SupportFlow, sessionId?: s
     if (/(crear|levantar|registrar|abrir|generar|reportar|reclamo|queja|incidente).*(ticket|incidencia|reporte)|ticket.*(crear|levantar|abrir|generar|reportar)/i.test(normalized)) return { flow: { kind: 'ticket-customer', type: normalized.includes('incid') ? 'Incidencia' : normalized.includes('reclam') || normalized.includes('queja') ? 'Reclamacion' : normalized.includes('reporte') ? 'Consulta' : 'Soporte' }, reply: 'Para levantar el ticket, indica el ClienteID. Después solicitaré el tipo, descripción, categoría y prioridad.' }
     if (/(revisar|consultar|estado|seguimiento|rastrear|d[oó]nde).*(pedido)|pedido.*(revisar|consultar|estado|seguimiento|rastrear)/i.test(normalized)) {
       const [customerId, orderId] = text.split('|').map((part) => part.trim())
-      const naturalOrderId = text.match(/\bRC-PED-[A-Z0-9-]+\b/i)?.[0]
+      const naturalOrderId = text.match(/\bPED-[A-Z0-9-]+\b/i)?.[0]
       const naturalCustomerId = text.match(/\bCLI[-_ ]?[A-Z0-9-]+\b/i)?.[0]
       if (naturalCustomerId && naturalOrderId) {
         return { flow: { kind: 'idle' }, reply: formatOperation(await ejecutarOperacionSoporte('pedido-consultar', { cliente_id: naturalCustomerId, pedido_id: naturalOrderId })) }
       }
-      if (customerId && orderId?.toUpperCase().startsWith('RC-PED-')) {
+      if (customerId && orderId?.toUpperCase().startsWith('PED-')) {
         return { flow: { kind: 'idle' }, reply: formatOperation(await ejecutarOperacionSoporte('pedido-consultar', { cliente_id: customerId, pedido_id: orderId })) }
       }
-      return { flow: { kind: 'order-customer', intent: 'query' }, reply: 'Para revisar el pedido, escribe ClienteID y después PedidoID. Puedes usar: CLI-0001 | RC-PED-1001.' }
+      return { flow: { kind: 'order-customer', intent: 'query' }, reply: 'Para revisar el pedido, escribe ClienteID y después PedidoID. Puedes usar: CLI-0001 | PED-1001.' }
     }
-    if (/^(pedido|pedidos)$/i.test(normalized)) return { flow: { kind: 'order-customer', intent: 'query' }, reply: '¿Quieres consultar un pedido existente o crear uno nuevo? Para consultar, escribe el ClienteID y el PedidoID; por ejemplo: CLI-0001 | RC-PED-1001.' }
+    if (/^(pedido|pedidos)$/i.test(normalized)) return { flow: { kind: 'order-customer', intent: 'query' }, reply: '¿Quieres consultar un pedido existente o crear uno nuevo? Para consultar, escribe el ClienteID y el PedidoID; por ejemplo: CLI-0001 | PED-1001.' }
     if (/(revisar|consultar|estado|seguimiento).*(ticket)|ticket.*(revisar|consultar|estado|seguimiento)/i.test(normalized)) {
-      return { flow: { kind: 'ticket-customer', type: 'consulta' }, reply: 'Para revisar el ticket, escribe: ClienteID | TicketID (por ejemplo, CLI-0001 | RC-TIC-1001).' }
+      return { flow: { kind: 'ticket-customer', type: 'consulta' }, reply: 'Para revisar el ticket, escribe: ClienteID | TicketID (por ejemplo, CLI-0001 | TIC-1001).' }
     }
-    const orderId = text.match(/\bRC-PED-[A-Z0-9-]+\b/i)?.[0]
+    const orderId = text.match(/\bPED-[A-Z0-9-]+\b/i)?.[0]
     if (orderId) return { flow: { kind: 'order-customer', intent: 'query' }, reply: `Para consultar ${orderId}, indica también el ClienteID.` }
-    const ticketId = text.match(/\bRC-TIC-[A-Z0-9-]+\b/i)?.[0]
+    const ticketId = text.match(/\bTIC-[A-Z0-9-]+\b/i)?.[0]
     if (ticketId) return { flow: { kind: 'ticket-customer', type: 'consulta' }, reply: `Para consultar ${ticketId}, indica también el ClienteID.` }
     if (normalized.includes('inventario') || normalized.includes('existencia')) {
       const sku = text.match(/\b[A-Z]{2,5}-\d{3,}\b/i)?.[0]
@@ -775,7 +787,7 @@ async function handleSupportInput(text: string, flow: SupportFlow, sessionId?: s
   }
   if (flow.kind === 'order-customer') {
     if (flow.intent === 'create' && normalized === 'nuevo') return { flow: { kind: 'new-customer', customer: {}, field: 'razon_social' }, reply: 'Vamos a registrar al cliente. Escribe la razón social.' }
-    const orderId = text.match(/\bRC-PED-[A-Z0-9-]+\b/i)?.[0]
+    const orderId = text.match(/\bPED-[A-Z0-9-]+\b/i)?.[0]
     if (orderId && flow.intent === 'query') {
       const customerId = text.match(/\bCLI[-_ ]?[A-Z0-9-]+\b/i)?.[0] ?? text.replace(orderId, '').replace(/[|,]/g, ' ').trim()
       if (customerId) return { flow: { kind: 'idle' }, reply: formatOperation(await ejecutarOperacionSoporte('pedido-consultar', { cliente_id: customerId, pedido_id: orderId })) }
@@ -783,9 +795,9 @@ async function handleSupportInput(text: string, flow: SupportFlow, sessionId?: s
     }
     const [customerId, pedidoId] = text.split('|').map((part) => part.trim())
     if (flow.intent === 'query') {
-      if (pedidoId?.toUpperCase().startsWith('RC-PED-')) return { flow: { kind: 'idle' }, reply: formatOperation(await ejecutarOperacionSoporte('pedido-consultar', { cliente_id: customerId, pedido_id: pedidoId })) }
-      if (/^(cli|cliente)[-_ ]?\w+$/i.test(text)) return { flow, reply: `Recibí el ClienteID ${text}. Ahora indica el PedidoID, por ejemplo RC-PED-1001.` }
-      return { flow, reply: 'No identifiqué el PedidoID. Escribe el ClienteID y PedidoID, por ejemplo: CLI-0001 | RC-PED-1001.' }
+      if (pedidoId?.toUpperCase().startsWith('PED-')) return { flow: { kind: 'idle' }, reply: formatOperation(await ejecutarOperacionSoporte('pedido-consultar', { cliente_id: customerId, pedido_id: pedidoId })) }
+      if (/^(cli|cliente)[-_ ]?\w+$/i.test(text)) return { flow, reply: `Recibí el ClienteID ${text}. Ahora indica el PedidoID, por ejemplo PED-1001.` }
+      return { flow, reply: 'No identifiqué el PedidoID. Escribe el ClienteID y PedidoID, por ejemplo: CLI-0001 | PED-1001.' }
     }
     return { flow: { kind: 'order-item', customer: { cliente_id: text } }, reply: 'Indica el nombre o SKU del producto y la cantidad con este formato: producto | cantidad.' }
   }
@@ -828,10 +840,10 @@ async function handleSupportInput(text: string, flow: SupportFlow, sessionId?: s
     return { flow: { kind: 'idle' }, reply: formatOperation(result) }
   }
   if (flow.kind === 'ticket-customer') {
-    const ticketId = text.match(/\bRC-TIC-[A-Z0-9-]+\b/i)?.[0]
+    const ticketId = text.match(/\bTIC-[A-Z0-9-]+\b/i)?.[0]
     if (ticketId) return { flow: { kind: 'idle' }, reply: 'Para consultar el ticket, escribe: ClienteID | TicketID.' }
     const [customerId, id] = text.split('|').map((part) => part.trim())
-    if (id?.toUpperCase().startsWith('RC-TIC-')) return { flow: { kind: 'idle' }, reply: formatOperation(await ejecutarOperacionSoporte('ticket-consultar', { cliente_id: customerId, ticket_id: id })) }
+    if (id?.toUpperCase().startsWith('TIC-')) return { flow: { kind: 'idle' }, reply: formatOperation(await ejecutarOperacionSoporte('ticket-consultar', { cliente_id: customerId, ticket_id: id })) }
     const customer = await ejecutarOperacionSoporte('cliente-consultar', { cliente_id: text })
     if (!customer.found) return { flow, reply: 'No encontré ese ClienteID en Azure SQL. Verifica el identificador e inténtalo de nuevo.' }
     return { flow: { kind: 'ticket-type', customerId: text }, reply: 'Indica el tipo de ticket: Soporte, Incidencia, Reclamación o Consulta.' }
